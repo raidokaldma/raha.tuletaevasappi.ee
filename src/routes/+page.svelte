@@ -13,13 +13,39 @@
 		return Object.fromEntries(names.map((n) => [n, false]));
 	}
 
-	let nextId = $state(5);
+	let nextId = $state(31);
 
 	let rows: Row[] = $state([
 		{ id: 1, whoPaid: 'Alice', description: 'Office supplies', amount: 125.5, whoReceived: { ...allNamesOff(), Bob: true, Charlie: true } },
 		{ id: 2, whoPaid: 'Bob', description: 'Software license', amount: 499.99, whoReceived: { ...allNamesOff(), Alice: true, Diana: true } },
 		{ id: 3, whoPaid: 'Charlie', description: 'Travel expenses', amount: 230.0, whoReceived: { ...allNamesOff(), Alice: true, Bob: true, Eve: true } },
-		{ id: 4, whoPaid: 'Diana', description: 'Marketing materials', amount: 75.0, whoReceived: { ...allNamesOff(), Charlie: true } }
+		{ id: 4, whoPaid: 'Diana', description: 'Marketing materials', amount: 75.0, whoReceived: { ...allNamesOff(), Charlie: true } },
+		{ id: 5, whoPaid: 'Eve', description: 'Team lunch', amount: 89.9, whoReceived: { ...allNamesOff(), Alice: true, Bob: true, Charlie: true, Diana: true } },
+		{ id: 6, whoPaid: 'Alice', description: 'Printer ink', amount: 45.0, whoReceived: { ...allNamesOff(), Bob: true, Eve: true } },
+		{ id: 7, whoPaid: 'Bob', description: 'Cloud hosting', amount: 312.0, whoReceived: { ...allNamesOff(), Alice: true, Charlie: true, Eve: true } },
+		{ id: 8, whoPaid: 'Charlie', description: 'Conference tickets', amount: 650.0, whoReceived: { ...allNamesOff(), Alice: true, Bob: true } },
+		{ id: 9, whoPaid: 'Diana', description: 'Coffee beans', amount: 32.5, whoReceived: { ...allNamesOff(), Alice: true, Bob: true, Charlie: true, Eve: true } },
+		{ id: 10, whoPaid: 'Eve', description: 'Taxi to airport', amount: 55.0, whoReceived: { ...allNamesOff(), Diana: true } },
+		{ id: 11, whoPaid: 'Alice', description: 'Domain renewal', amount: 14.99, whoReceived: { ...allNamesOff(), Bob: true, Charlie: true, Diana: true, Eve: true } },
+		{ id: 12, whoPaid: 'Bob', description: 'Team dinner', amount: 187.5, whoReceived: { ...allNamesOff(), Alice: true, Charlie: true, Diana: true, Eve: true } },
+		{ id: 13, whoPaid: 'Charlie', description: 'USB drives', amount: 28.0, whoReceived: { ...allNamesOff(), Diana: true, Eve: true } },
+		{ id: 14, whoPaid: 'Diana', description: 'Whiteboard markers', amount: 18.75, whoReceived: { ...allNamesOff(), Alice: true, Bob: true } },
+		{ id: 15, whoPaid: 'Eve', description: 'Project management tool', amount: 99.0, whoReceived: { ...allNamesOff(), Alice: true, Bob: true, Charlie: true, Diana: true } },
+		{ id: 16, whoPaid: 'Alice', description: 'Parking fees', amount: 40.0, whoReceived: { ...allNamesOff(), Charlie: true } },
+		{ id: 17, whoPaid: 'Bob', description: 'Design assets', amount: 79.0, whoReceived: { ...allNamesOff(), Alice: true, Eve: true } },
+		{ id: 18, whoPaid: 'Charlie', description: 'Snacks for meeting', amount: 22.3, whoReceived: { ...allNamesOff(), Alice: true, Bob: true, Diana: true, Eve: true } },
+		{ id: 19, whoPaid: 'Diana', description: 'Train tickets', amount: 145.0, whoReceived: { ...allNamesOff(), Alice: true, Charlie: true } },
+		{ id: 20, whoPaid: 'Eve', description: 'Stationery', amount: 37.25, whoReceived: { ...allNamesOff(), Bob: true, Diana: true } },
+		{ id: 21, whoPaid: 'Alice', description: 'API subscription', amount: 199.0, whoReceived: { ...allNamesOff(), Bob: true, Charlie: true, Diana: true, Eve: true } },
+		{ id: 22, whoPaid: 'Bob', description: 'Hotel room', amount: 420.0, whoReceived: { ...allNamesOff(), Charlie: true, Diana: true } },
+		{ id: 23, whoPaid: 'Charlie', description: 'Lunch delivery', amount: 63.8, whoReceived: { ...allNamesOff(), Alice: true, Eve: true } },
+		{ id: 24, whoPaid: 'Diana', description: 'Phone chargers', amount: 29.99, whoReceived: { ...allNamesOff(), Alice: true, Bob: true, Eve: true } },
+		{ id: 25, whoPaid: 'Eve', description: 'Team building event', amount: 350.0, whoReceived: { ...allNamesOff(), Alice: true, Bob: true, Charlie: true, Diana: true } },
+		{ id: 26, whoPaid: 'Alice', description: 'Cab to client office', amount: 38.0, whoReceived: { ...allNamesOff(), Bob: true } },
+		{ id: 27, whoPaid: 'Bob', description: 'Monitor stand', amount: 85.0, whoReceived: { ...allNamesOff(), Alice: true, Diana: true, Eve: true } },
+		{ id: 28, whoPaid: 'Charlie', description: 'VPN subscription', amount: 59.99, whoReceived: { ...allNamesOff(), Alice: true, Bob: true, Diana: true, Eve: true } },
+		{ id: 29, whoPaid: 'Diana', description: 'Birthday cake', amount: 42.0, whoReceived: { ...allNamesOff(), Alice: true, Bob: true, Charlie: true, Eve: true } },
+		{ id: 30, whoPaid: 'Eve', description: 'Courier service', amount: 15.5, whoReceived: { ...allNamesOff(), Charlie: true, Diana: true } }
 	]);
 
 	function addRow() {
@@ -43,9 +69,9 @@
 		<h1 class="mb-6 text-2xl font-bold text-gray-900">Data Table</h1>
 
 		<!-- Desktop table -->
-		<div class="hidden md:block overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
+		<div class="hidden md:block rounded-lg border border-gray-200 bg-white shadow-sm">
 			<table class="w-full">
-				<thead class="sticky top-0 bg-gray-100">
+				<thead class="sticky top-0 z-10 bg-gray-100 shadow-[0_1px_0_0_theme(colors.gray.200)]">
 					<tr>
 						<th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Who Paid</th>
 						<th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Description</th>
