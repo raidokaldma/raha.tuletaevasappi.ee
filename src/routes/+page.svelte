@@ -3,22 +3,27 @@
 
 	type Row = {
 		id: number;
-		name: string;
+		whoPaid: string;
 		description: string;
 		amount: number | null;
+		whoReceived: Record<string, boolean>;
 	};
+
+	function allNamesOff(): Record<string, boolean> {
+		return Object.fromEntries(names.map((n) => [n, false]));
+	}
 
 	let nextId = $state(5);
 
 	let rows: Row[] = $state([
-		{ id: 1, name: 'Alice', description: 'Office supplies', amount: 125.5 },
-		{ id: 2, name: 'Bob', description: 'Software license', amount: 499.99 },
-		{ id: 3, name: 'Charlie', description: 'Travel expenses', amount: 230.0 },
-		{ id: 4, name: 'Diana', description: 'Marketing materials', amount: 75.0 }
+		{ id: 1, whoPaid: 'Alice', description: 'Office supplies', amount: 125.5, whoReceived: { ...allNamesOff(), Bob: true, Charlie: true } },
+		{ id: 2, whoPaid: 'Bob', description: 'Software license', amount: 499.99, whoReceived: { ...allNamesOff(), Alice: true, Diana: true } },
+		{ id: 3, whoPaid: 'Charlie', description: 'Travel expenses', amount: 230.0, whoReceived: { ...allNamesOff(), Alice: true, Bob: true, Eve: true } },
+		{ id: 4, whoPaid: 'Diana', description: 'Marketing materials', amount: 75.0, whoReceived: { ...allNamesOff(), Charlie: true } }
 	]);
 
 	function addRow() {
-		rows.push({ id: nextId++, name: names[0], description: '', amount: null });
+		rows.push({ id: nextId++, whoPaid: names[0], description: '', amount: null, whoReceived: allNamesOff() });
 	}
 
 	function deleteRow(id: number) {
@@ -42,9 +47,10 @@
 			<table class="w-full">
 				<thead class="sticky top-0 bg-gray-100">
 					<tr>
-						<th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Name</th>
+						<th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Who Paid</th>
 						<th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Description</th>
 						<th class="px-4 py-3 text-right text-sm font-semibold text-gray-700">Amount (EUR)</th>
+						<th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Who Received</th>
 						<th class="px-4 py-3 text-center text-sm font-semibold text-gray-700 w-20"></th>
 					</tr>
 				</thead>
@@ -53,7 +59,7 @@
 						<tr class="border-t border-gray-100 hover:bg-gray-50">
 							<td class="px-4 py-2">
 								<select
-									bind:value={row.name}
+									bind:value={row.whoPaid}
 									class="w-full rounded border border-gray-300 bg-white px-2 py-1.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
 								>
 									{#each names as n}
@@ -82,6 +88,16 @@
 									/>
 								</div>
 							</td>
+							<td class="px-4 py-2">
+								<div class="flex flex-wrap gap-1.5">
+									{#each names as n}
+										<label class="inline-flex cursor-pointer items-center gap-1 rounded-full px-2 py-0.5 text-xs transition-colors {row.whoReceived[n] ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-500'}">
+											<input type="checkbox" bind:checked={row.whoReceived[n]} class="sr-only" />
+											{n}
+										</label>
+									{/each}
+								</div>
+							</td>
 							<td class="px-4 py-2 text-center">
 								<button
 									onclick={() => deleteRow(row.id)}
@@ -95,7 +111,7 @@
 					{/each}
 					{#if rows.length === 0}
 						<tr>
-							<td colspan="4" class="px-4 py-8 text-center text-sm text-gray-500">
+							<td colspan="5" class="px-4 py-8 text-center text-sm text-gray-500">
 								No rows yet. Click "Add Row" to get started.
 							</td>
 						</tr>
@@ -105,6 +121,7 @@
 					<tr>
 						<td colspan="2" class="px-4 py-3 text-sm font-semibold text-gray-700">Total</td>
 						<td class="px-4 py-3 text-right text-sm font-semibold text-gray-900">{formatEur(total)} &euro;</td>
+						<td></td>
 						<td></td>
 					</tr>
 				</tfoot>
@@ -127,9 +144,9 @@
 
 					<div class="space-y-3">
 						<label class="block">
-							<span class="mb-1 block text-xs font-medium text-gray-600">Name</span>
+							<span class="mb-1 block text-xs font-medium text-gray-600">Who Paid</span>
 							<select
-								bind:value={row.name}
+								bind:value={row.whoPaid}
 								class="w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
 							>
 								{#each names as n}
@@ -162,6 +179,18 @@
 								/>
 							</div>
 						</label>
+
+						<div>
+							<span class="mb-1 block text-xs font-medium text-gray-600">Who Received</span>
+							<div class="flex flex-wrap gap-1.5">
+								{#each names as n}
+									<label class="inline-flex cursor-pointer items-center gap-1 rounded-full px-2.5 py-1 text-xs transition-colors {row.whoReceived[n] ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-500'}">
+										<input type="checkbox" bind:checked={row.whoReceived[n]} class="sr-only" />
+										{n}
+									</label>
+								{/each}
+							</div>
+						</div>
 					</div>
 				</div>
 			{/each}
