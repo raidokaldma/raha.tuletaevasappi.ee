@@ -79,6 +79,29 @@
 		})
 	);
 
+	type Settlement = { from: string; to: string; amount: number };
+
+	let settlements: Settlement[] = $derived.by(() => {
+		const balances = summary.map((s) => ({ name: s.name, balance: s.balance }));
+		const result: Settlement[] = [];
+
+		// Greedy algorithm: repeatedly match largest debtor with largest creditor
+		while (true) {
+			balances.sort((a, b) => a.balance - b.balance);
+			const debtor = balances[0];
+			const creditor = balances[balances.length - 1];
+
+			if (!debtor || !creditor || debtor.balance >= -0.01 || creditor.balance <= 0.01) break;
+
+			const amount = Math.min(-debtor.balance, creditor.balance);
+			result.push({ from: debtor.name, to: creditor.name, amount });
+			debtor.balance += amount;
+			creditor.balance -= amount;
+		}
+
+		return result;
+	});
+
 	// Themes
 	type Theme = {
 		name: string;
@@ -112,6 +135,11 @@
 		summaryValue: string;
 		summaryPositive: string;
 		summaryNegative: string;
+		settlementCard: string;
+		settlementFrom: string;
+		settlementArrow: string;
+		settlementTo: string;
+		settlementAmount: string;
 		themeBtn: string;
 		themeBtnActive: string;
 	};
@@ -149,6 +177,11 @@
 			summaryValue: 'text-gray-700',
 			summaryPositive: 'text-green-600',
 			summaryNegative: 'text-red-600',
+			settlementCard: 'border-gray-200 bg-white',
+			settlementFrom: 'text-gray-900',
+			settlementArrow: 'text-gray-400',
+			settlementTo: 'text-gray-900',
+			settlementAmount: 'text-blue-600 bg-blue-50',
 			themeBtn: 'border-gray-300 bg-white text-gray-700 hover:bg-gray-100',
 			themeBtnActive: 'border-blue-500 bg-blue-50 text-blue-700 ring-1 ring-blue-500'
 		},
@@ -184,6 +217,11 @@
 			summaryValue: 'text-slate-300',
 			summaryPositive: 'text-green-400',
 			summaryNegative: 'text-red-400',
+			settlementCard: 'border-slate-700 bg-slate-800',
+			settlementFrom: 'text-slate-100',
+			settlementArrow: 'text-slate-500',
+			settlementTo: 'text-slate-100',
+			settlementAmount: 'text-blue-300 bg-blue-900/40',
 			themeBtn: 'border-slate-600 bg-slate-800 text-slate-300 hover:bg-slate-700',
 			themeBtnActive: 'border-blue-400 bg-blue-900/40 text-blue-300 ring-1 ring-blue-400'
 		},
@@ -219,6 +257,11 @@
 			summaryValue: 'text-pink-700',
 			summaryPositive: 'text-green-600',
 			summaryNegative: 'text-rose-500',
+			settlementCard: 'border-pink-200 bg-white',
+			settlementFrom: 'text-pink-900',
+			settlementArrow: 'text-pink-300',
+			settlementTo: 'text-pink-900',
+			settlementAmount: 'text-pink-700 bg-pink-100',
 			themeBtn: 'border-pink-300 bg-white text-pink-700 hover:bg-pink-100',
 			themeBtnActive: 'border-pink-500 bg-pink-100 text-pink-800 ring-1 ring-pink-500'
 		}
@@ -437,6 +480,27 @@
 				</div>
 			{/each}
 		</div>
+
+		<!-- Settlements -->
+		<h2 class="mt-10 mb-4 text-xl font-bold {t.title}">Settle Up</h2>
+		{#if settlements.length === 0}
+			<p class="text-sm {t.emptyText}">All settled up — no payments needed.</p>
+		{:else}
+			<div class="space-y-2">
+				{#each settlements as s}
+					<div class="flex items-center gap-3 rounded-lg border p-3 shadow-sm {t.settlementCard}">
+						<span class="text-sm font-semibold {t.settlementFrom}">{s.from}</span>
+						<svg class="h-4 w-4 shrink-0 {t.settlementArrow}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+						</svg>
+						<span class="text-sm font-semibold {t.settlementTo}">{s.to}</span>
+						<span class="ml-auto rounded-full px-2.5 py-0.5 text-sm font-semibold {t.settlementAmount}">
+							{formatEur(s.amount)} &euro;
+						</span>
+					</div>
+				{/each}
+			</div>
+		{/if}
 
 		<!-- Theme switcher -->
 		<div class="mt-8 flex items-center gap-2">
