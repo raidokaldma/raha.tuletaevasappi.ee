@@ -62,31 +62,155 @@
 	}
 
 	let total = $derived(rows.reduce((sum, r) => sum + (r.amount ?? 0), 0));
+
+	// Themes
+	type Theme = {
+		name: string;
+		page: string;
+		title: string;
+		tableWrapper: string;
+		thead: string;
+		th: string;
+		row: string;
+		rowBorder: string;
+		input: string;
+		select: string;
+		euro: string;
+		pillOn: string;
+		pillOff: string;
+		deleteBtn: string;
+		emptyText: string;
+		tfoot: string;
+		tfootLabel: string;
+		tfootValue: string;
+		card: string;
+		cardLabel: string;
+		cardFieldLabel: string;
+		totalBar: string;
+		totalLabel: string;
+		totalValue: string;
+		addBtn: string;
+		themeBtn: string;
+		themeBtnActive: string;
+	};
+
+	const themes: Theme[] = [
+		{
+			name: 'Light',
+			page: 'bg-gray-50',
+			title: 'text-gray-900',
+			tableWrapper: 'border-gray-200 bg-white',
+			thead: 'bg-gray-100 shadow-[0_1px_0_0_rgb(229,231,235)]',
+			th: 'text-gray-700',
+			row: 'hover:bg-gray-50',
+			rowBorder: 'border-gray-100',
+			input: 'border-gray-300 bg-white text-gray-900 focus:border-blue-500 focus:ring-blue-500',
+			select: 'border-gray-300 bg-white text-gray-900 focus:border-blue-500 focus:ring-blue-500',
+			euro: 'text-gray-500',
+			pillOn: 'bg-blue-100 text-blue-800',
+			pillOff: 'bg-gray-100 text-gray-500',
+			deleteBtn: 'text-red-600 hover:bg-red-50 hover:text-red-700 focus:ring-red-500',
+			emptyText: 'text-gray-500',
+			tfoot: 'border-gray-200 bg-gray-50',
+			tfootLabel: 'text-gray-700',
+			tfootValue: 'text-gray-900',
+			card: 'border-gray-200 bg-white',
+			cardLabel: 'text-gray-500',
+			cardFieldLabel: 'text-gray-600',
+			totalBar: 'border-gray-200 bg-gray-50',
+			totalLabel: 'text-gray-700',
+			totalValue: 'text-gray-900',
+			addBtn: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
+			themeBtn: 'border-gray-300 bg-white text-gray-700 hover:bg-gray-100',
+			themeBtnActive: 'border-blue-500 bg-blue-50 text-blue-700 ring-1 ring-blue-500'
+		},
+		{
+			name: 'Midnight',
+			page: 'bg-slate-900',
+			title: 'text-slate-100',
+			tableWrapper: 'border-slate-700 bg-slate-800',
+			thead: 'bg-slate-700 shadow-[0_1px_0_0_rgb(51,65,85)]',
+			th: 'text-slate-300',
+			row: 'hover:bg-slate-750 hover:bg-slate-700/50',
+			rowBorder: 'border-slate-700',
+			input: 'border-slate-600 bg-slate-700 text-slate-100 placeholder:text-slate-500 focus:border-blue-400 focus:ring-blue-400',
+			select: 'border-slate-600 bg-slate-700 text-slate-100 focus:border-blue-400 focus:ring-blue-400',
+			euro: 'text-slate-400',
+			pillOn: 'bg-blue-900 text-blue-300',
+			pillOff: 'bg-slate-700 text-slate-400',
+			deleteBtn: 'text-red-400 hover:bg-red-900/30 hover:text-red-300 focus:ring-red-400',
+			emptyText: 'text-slate-500',
+			tfoot: 'border-slate-600 bg-slate-800',
+			tfootLabel: 'text-slate-300',
+			tfootValue: 'text-slate-100',
+			card: 'border-slate-700 bg-slate-800',
+			cardLabel: 'text-slate-400',
+			cardFieldLabel: 'text-slate-400',
+			totalBar: 'border-slate-700 bg-slate-800',
+			totalLabel: 'text-slate-300',
+			totalValue: 'text-slate-100',
+			addBtn: 'bg-blue-500 text-white hover:bg-blue-400 focus:ring-blue-400',
+			themeBtn: 'border-slate-600 bg-slate-800 text-slate-300 hover:bg-slate-700',
+			themeBtnActive: 'border-blue-400 bg-blue-900/40 text-blue-300 ring-1 ring-blue-400'
+		},
+		{
+			name: 'Pink Pastel',
+			page: 'bg-pink-50',
+			title: 'text-pink-900',
+			tableWrapper: 'border-pink-200 bg-white',
+			thead: 'bg-pink-100 shadow-[0_1px_0_0_rgb(251,207,232)]',
+			th: 'text-pink-800',
+			row: 'hover:bg-pink-50',
+			rowBorder: 'border-pink-100',
+			input: 'border-pink-300 bg-white text-pink-900 focus:border-pink-500 focus:ring-pink-500',
+			select: 'border-pink-300 bg-white text-pink-900 focus:border-pink-500 focus:ring-pink-500',
+			euro: 'text-pink-400',
+			pillOn: 'bg-pink-200 text-pink-800',
+			pillOff: 'bg-pink-50 text-pink-400',
+			deleteBtn: 'text-rose-500 hover:bg-rose-50 hover:text-rose-600 focus:ring-rose-400',
+			emptyText: 'text-pink-400',
+			tfoot: 'border-pink-200 bg-pink-50',
+			tfootLabel: 'text-pink-700',
+			tfootValue: 'text-pink-900',
+			card: 'border-pink-200 bg-white',
+			cardLabel: 'text-pink-400',
+			cardFieldLabel: 'text-pink-600',
+			totalBar: 'border-pink-200 bg-pink-50',
+			totalLabel: 'text-pink-700',
+			totalValue: 'text-pink-900',
+			addBtn: 'bg-pink-500 text-white hover:bg-pink-600 focus:ring-pink-400',
+			themeBtn: 'border-pink-300 bg-white text-pink-700 hover:bg-pink-100',
+			themeBtnActive: 'border-pink-500 bg-pink-100 text-pink-800 ring-1 ring-pink-500'
+		}
+	];
+
+	let themeIndex = $state(0);
+	let t = $derived(themes[themeIndex]);
 </script>
 
-<div class="min-h-screen bg-gray-50 p-4 md:p-8">
+<div class="min-h-screen {t.page} p-4 md:p-8 transition-colors duration-300">
 	<div class="mx-auto max-w-4xl">
-		<h1 class="mb-6 text-2xl font-bold text-gray-900">Data Table</h1>
+		<h1 class="mb-6 text-2xl font-bold {t.title}">Data Table</h1>
 
 		<!-- Desktop table -->
-		<div class="hidden md:block rounded-lg border border-gray-200 bg-white shadow-sm">
+		<div class="hidden md:block rounded-lg border {t.tableWrapper} shadow-sm">
 			<table class="w-full">
-				<thead class="sticky top-0 z-10 bg-gray-100 shadow-[0_1px_0_0_theme(colors.gray.200)]">
+				<thead class="sticky top-0 z-10 {t.thead}">
 					<tr>
-						<th class="w-[12%] px-4 py-3 text-left text-sm font-semibold text-gray-700">Who Paid</th>
-						<th class="w-[22%] px-4 py-3 text-left text-sm font-semibold text-gray-700">Description</th>
-						<th class="w-[18%] px-4 py-3 text-right text-sm font-semibold text-gray-700">Amount (EUR)</th>
-						<th class="w-[40%] px-4 py-3 text-left text-sm font-semibold text-gray-700">Who Received</th>
-						<th class="w-[8%] px-4 py-3 text-center text-sm font-semibold text-gray-700"></th>
+						<th class="w-[12%] px-4 py-3 text-left text-sm font-semibold {t.th}">Who Paid</th>
+						<th class="w-[22%] px-4 py-3 text-left text-sm font-semibold {t.th}">Description</th>
+						<th class="w-[18%] px-4 py-3 text-right text-sm font-semibold {t.th}">Amount (EUR)</th>
+						<th class="w-[40%] px-4 py-3 text-left text-sm font-semibold {t.th}">Who Received</th>
+						<th class="w-[8%] px-4 py-3 text-center text-sm font-semibold {t.th}"></th>
 					</tr>
 				</thead>
 				<tbody>
 					{#each rows as row (row.id)}
-						<tr class="border-t border-gray-100 hover:bg-gray-50">
+						<tr class="border-t {t.rowBorder} {t.row}">
 							<td class="px-4 py-2">
 								<select
 									bind:value={row.whoPaid}
-									class="w-full rounded border border-gray-300 bg-white px-2 py-1.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+									class="w-full rounded border px-2 py-1.5 text-sm focus:ring-1 focus:outline-none {t.select}"
 								>
 									{#each names as n}
 										<option value={n}>{n}</option>
@@ -98,26 +222,26 @@
 									type="text"
 									bind:value={row.description}
 									placeholder="Enter description"
-									class="w-full rounded border border-gray-300 px-2 py-1.5 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+									class="w-full rounded border px-2 py-1.5 text-sm focus:ring-1 focus:outline-none {t.input}"
 								/>
 							</td>
 							<td class="px-4 py-2">
 								<div class="relative">
-									<span class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-sm text-gray-500">&euro;</span>
+									<span class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-sm {t.euro}">&euro;</span>
 									<input
 										type="number"
 										bind:value={row.amount}
 										step="0.01"
 										min="0"
 										placeholder="0.00"
-										class="w-full rounded border border-gray-300 px-2 py-1.5 pr-7 text-right text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+										class="w-full rounded border px-2 py-1.5 pr-7 text-right text-sm focus:ring-1 focus:outline-none {t.input}"
 									/>
 								</div>
 							</td>
 							<td class="px-4 py-2">
 								<div class="flex flex-wrap gap-1.5">
 									{#each names as n}
-										<label class="inline-flex cursor-pointer items-center gap-1 rounded-full px-2 py-0.5 text-xs transition-colors {row.whoReceived[n] ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-500'}">
+										<label class="inline-flex cursor-pointer items-center gap-1 rounded-full px-2 py-0.5 text-xs transition-colors {row.whoReceived[n] ? t.pillOn : t.pillOff}">
 											<input type="checkbox" bind:checked={row.whoReceived[n]} class="sr-only" />
 											{n}
 										</label>
@@ -127,7 +251,7 @@
 							<td class="px-4 py-2 text-center">
 								<button
 									onclick={() => deleteRow(row.id)}
-									class="rounded px-2 py-1 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 focus:outline-none focus:ring-1 focus:ring-red-500"
+									class="rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 {t.deleteBtn}"
 									title="Delete row"
 								>
 									Delete
@@ -137,16 +261,16 @@
 					{/each}
 					{#if rows.length === 0}
 						<tr>
-							<td colspan="5" class="px-4 py-8 text-center text-sm text-gray-500">
+							<td colspan="5" class="px-4 py-8 text-center text-sm {t.emptyText}">
 								No rows yet. Click "Add Row" to get started.
 							</td>
 						</tr>
 					{/if}
 				</tbody>
-				<tfoot class="border-t-2 border-gray-200 bg-gray-50">
+				<tfoot class="border-t-2 {t.tfoot}">
 					<tr>
-						<td colspan="2" class="px-4 py-3 text-sm font-semibold text-gray-700">Total</td>
-						<td class="px-4 py-3 text-right text-sm font-semibold text-gray-900">{formatEur(total)} &euro;</td>
+						<td colspan="2" class="px-4 py-3 text-sm font-semibold {t.tfootLabel}">Total</td>
+						<td class="px-4 py-3 text-right text-sm font-semibold {t.tfootValue}">{formatEur(total)} &euro;</td>
 						<td></td>
 						<td></td>
 					</tr>
@@ -157,12 +281,12 @@
 		<!-- Mobile cards -->
 		<div class="md:hidden space-y-3">
 			{#each rows as row (row.id)}
-				<div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+				<div class="rounded-lg border {t.card} p-4 shadow-sm">
 					<div class="mb-3 flex items-center justify-between">
-						<span class="text-xs font-semibold uppercase tracking-wide text-gray-500">Entry</span>
+						<span class="text-xs font-semibold uppercase tracking-wide {t.cardLabel}">Entry</span>
 						<button
 							onclick={() => deleteRow(row.id)}
-							class="rounded px-2 py-1 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 focus:outline-none focus:ring-1 focus:ring-red-500"
+							class="rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 {t.deleteBtn}"
 						>
 							Delete
 						</button>
@@ -170,10 +294,10 @@
 
 					<div class="space-y-3">
 						<label class="block">
-							<span class="mb-1 block text-xs font-medium text-gray-600">Who Paid</span>
+							<span class="mb-1 block text-xs font-medium {t.cardFieldLabel}">Who Paid</span>
 							<select
 								bind:value={row.whoPaid}
-								class="w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+								class="w-full rounded border px-3 py-2 text-sm focus:ring-1 focus:outline-none {t.select}"
 							>
 								{#each names as n}
 									<option value={n}>{n}</option>
@@ -182,35 +306,35 @@
 						</label>
 
 						<label class="block">
-							<span class="mb-1 block text-xs font-medium text-gray-600">Description</span>
+							<span class="mb-1 block text-xs font-medium {t.cardFieldLabel}">Description</span>
 							<input
 								type="text"
 								bind:value={row.description}
 								placeholder="Enter description"
-								class="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+								class="w-full rounded border px-3 py-2 text-sm focus:ring-1 focus:outline-none {t.input}"
 							/>
 						</label>
 
 						<label class="block">
-							<span class="mb-1 block text-xs font-medium text-gray-600">Amount (EUR)</span>
+							<span class="mb-1 block text-xs font-medium {t.cardFieldLabel}">Amount (EUR)</span>
 							<div class="relative">
-								<span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">&euro;</span>
+								<span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm {t.euro}">&euro;</span>
 								<input
 									type="number"
 									bind:value={row.amount}
 									step="0.01"
 									min="0"
 									placeholder="0.00"
-									class="w-full rounded border border-gray-300 px-3 py-2 pr-8 text-right text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
+									class="w-full rounded border px-3 py-2 pr-8 text-right text-sm focus:ring-1 focus:outline-none {t.input}"
 								/>
 							</div>
 						</label>
 
 						<div>
-							<span class="mb-1 block text-xs font-medium text-gray-600">Who Received</span>
+							<span class="mb-1 block text-xs font-medium {t.cardFieldLabel}">Who Received</span>
 							<div class="flex flex-wrap gap-1.5">
 								{#each names as n}
-									<label class="inline-flex cursor-pointer items-center gap-1 rounded-full px-2.5 py-1 text-xs transition-colors {row.whoReceived[n] ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-500'}">
+									<label class="inline-flex cursor-pointer items-center gap-1 rounded-full px-2.5 py-1 text-xs transition-colors {row.whoReceived[n] ? t.pillOn : t.pillOff}">
 										<input type="checkbox" bind:checked={row.whoReceived[n]} class="sr-only" />
 										{n}
 									</label>
@@ -222,16 +346,16 @@
 			{/each}
 
 			{#if rows.length === 0}
-				<div class="rounded-lg border border-gray-200 bg-white p-8 text-center text-sm text-gray-500">
+				<div class="rounded-lg border {t.card} p-8 text-center text-sm {t.emptyText}">
 					No rows yet. Click "Add Row" to get started.
 				</div>
 			{/if}
 
 			{#if rows.length > 0}
-				<div class="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
+				<div class="rounded-lg border {t.totalBar} px-4 py-3">
 					<div class="flex items-center justify-between">
-						<span class="text-sm font-semibold text-gray-700">Total</span>
-						<span class="text-sm font-semibold text-gray-900">{formatEur(total)} &euro;</span>
+						<span class="text-sm font-semibold {t.totalLabel}">Total</span>
+						<span class="text-sm font-semibold {t.totalValue}">{formatEur(total)} &euro;</span>
 					</div>
 				</div>
 			{/if}
@@ -241,10 +365,23 @@
 		<div class="mt-4">
 			<button
 				onclick={addRow}
-				class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+				class="rounded-lg px-4 py-2 text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 {t.addBtn}"
 			>
 				+ Add Row
 			</button>
+		</div>
+
+		<!-- Theme switcher -->
+		<div class="mt-8 flex items-center gap-2">
+			<span class="text-sm font-medium {t.title}">Theme:</span>
+			{#each themes as theme, i}
+				<button
+					onclick={() => (themeIndex = i)}
+					class="rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors {themeIndex === i ? t.themeBtnActive : t.themeBtn}"
+				>
+					{theme.name}
+				</button>
+			{/each}
 		</div>
 	</div>
 </div>
