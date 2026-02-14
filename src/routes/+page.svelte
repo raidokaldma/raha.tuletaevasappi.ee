@@ -63,6 +63,22 @@
 
 	let total = $derived(rows.reduce((sum, r) => sum + (r.amount ?? 0), 0));
 
+	let summary = $derived(
+		names.map((name) => {
+			const paid = rows
+				.filter((r) => r.whoPaid === name)
+				.reduce((sum, r) => sum + (r.amount ?? 0), 0);
+
+			const received = rows.reduce((sum, r) => {
+				if (!r.whoReceived[name] || !r.amount) return sum;
+				const receiverCount = Object.values(r.whoReceived).filter(Boolean).length;
+				return sum + (receiverCount > 0 ? r.amount / receiverCount : 0);
+			}, 0);
+
+			return { name, paid, received, balance: paid - received };
+		})
+	);
+
 	// Themes
 	type Theme = {
 		name: string;
@@ -90,6 +106,12 @@
 		totalLabel: string;
 		totalValue: string;
 		addBtn: string;
+		summaryCard: string;
+		summaryName: string;
+		summaryLabel: string;
+		summaryValue: string;
+		summaryPositive: string;
+		summaryNegative: string;
 		themeBtn: string;
 		themeBtnActive: string;
 	};
@@ -121,6 +143,12 @@
 			totalLabel: 'text-gray-700',
 			totalValue: 'text-gray-900',
 			addBtn: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
+			summaryCard: 'border-gray-200 bg-white',
+			summaryName: 'text-gray-900',
+			summaryLabel: 'text-gray-500',
+			summaryValue: 'text-gray-700',
+			summaryPositive: 'text-green-600',
+			summaryNegative: 'text-red-600',
 			themeBtn: 'border-gray-300 bg-white text-gray-700 hover:bg-gray-100',
 			themeBtnActive: 'border-blue-500 bg-blue-50 text-blue-700 ring-1 ring-blue-500'
 		},
@@ -150,6 +178,12 @@
 			totalLabel: 'text-slate-300',
 			totalValue: 'text-slate-100',
 			addBtn: 'bg-blue-500 text-white hover:bg-blue-400 focus:ring-blue-400',
+			summaryCard: 'border-slate-700 bg-slate-800',
+			summaryName: 'text-slate-100',
+			summaryLabel: 'text-slate-400',
+			summaryValue: 'text-slate-300',
+			summaryPositive: 'text-green-400',
+			summaryNegative: 'text-red-400',
 			themeBtn: 'border-slate-600 bg-slate-800 text-slate-300 hover:bg-slate-700',
 			themeBtnActive: 'border-blue-400 bg-blue-900/40 text-blue-300 ring-1 ring-blue-400'
 		},
@@ -179,6 +213,12 @@
 			totalLabel: 'text-pink-700',
 			totalValue: 'text-pink-900',
 			addBtn: 'bg-pink-500 text-white hover:bg-pink-600 focus:ring-pink-400',
+			summaryCard: 'border-pink-200 bg-white',
+			summaryName: 'text-pink-900',
+			summaryLabel: 'text-pink-400',
+			summaryValue: 'text-pink-700',
+			summaryPositive: 'text-green-600',
+			summaryNegative: 'text-rose-500',
 			themeBtn: 'border-pink-300 bg-white text-pink-700 hover:bg-pink-100',
 			themeBtnActive: 'border-pink-500 bg-pink-100 text-pink-800 ring-1 ring-pink-500'
 		}
@@ -369,6 +409,32 @@
 			>
 				+ Add Row
 			</button>
+		</div>
+
+		<!-- Summary -->
+		<h2 class="mt-10 mb-4 text-xl font-bold {t.title}">Summary per Person</h2>
+		<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+			{#each summary as person}
+				<div class="rounded-lg border p-4 shadow-sm {t.summaryCard}">
+					<div class="mb-3 text-base font-semibold {t.summaryName}">{person.name}</div>
+					<div class="space-y-1.5 text-sm">
+						<div class="flex justify-between">
+							<span class={t.summaryLabel}>Paid</span>
+							<span class={t.summaryValue}>{formatEur(person.paid)} &euro;</span>
+						</div>
+						<div class="flex justify-between">
+							<span class={t.summaryLabel}>Received</span>
+							<span class={t.summaryValue}>{formatEur(person.received)} &euro;</span>
+						</div>
+						<div class="flex justify-between border-t pt-1.5 {t.summaryCard.includes('slate') ? 'border-slate-700' : t.summaryCard.includes('pink') ? 'border-pink-200' : 'border-gray-200'}">
+							<span class="{t.summaryLabel} font-medium">Balance</span>
+							<span class="font-semibold {person.balance >= 0 ? t.summaryPositive : t.summaryNegative}">
+								{person.balance >= 0 ? '+' : ''}{formatEur(person.balance)} &euro;
+							</span>
+						</div>
+					</div>
+				</div>
+			{/each}
 		</div>
 
 		<!-- Theme switcher -->
