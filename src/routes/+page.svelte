@@ -224,7 +224,8 @@
 		}
 	];
 
-	let themeIndex = $state(0);
+	const prefersDark = typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches;
+	let themeIndex = $state(prefersDark ? 1 : 0);
 	let t = $derived(themes[themeIndex]);
 </script>
 
