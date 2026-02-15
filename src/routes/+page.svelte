@@ -330,6 +330,7 @@
 		</div>
 
 		<!-- People -->
+		<h2 class="mt-6 mb-4 text-xl font-bold {t.title}">People</h2>
 		<div class="mb-4 flex flex-wrap items-center gap-2">
 			{#each appState.names as name}
 				<span class="inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-medium {t.pillOn}">
