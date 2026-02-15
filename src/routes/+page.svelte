@@ -56,6 +56,12 @@
 		return !!row.amount && !Object.values(row.whoReceived).some(Boolean);
 	}
 
+	function clampAmount(row: Row) {
+		if (row.amount === null) return;
+		if (row.amount < 0) row.amount = 0;
+		if (row.amount > 9999.99) row.amount = 9999.99;
+	}
+
 	function formatEur(value: number | null): string {
 		if (value === null) return '';
 		return value.toFixed(2);
@@ -274,11 +280,24 @@
 	const prefersDark = typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches;
 	let themeIndex = $state(prefersDark ? 1 : 0);
 	let t = $derived(themes[themeIndex]);
+
+	let title = $state('Data Table');
 </script>
 
 <div class="min-h-screen {t.page} p-4 md:p-8 transition-colors duration-300">
 	<div class="mx-auto max-w-4xl">
-		<h1 class="mb-6 text-2xl font-bold {t.title}">Data Table</h1>
+		<div class="mb-6 group flex items-center gap-2 rounded-lg px-3 py-1 -mx-3 -my-1 transition-colors hover:bg-black/5 dark:hover:bg-white/5">
+			<input
+				type="text"
+				bind:value={title}
+				class="block w-full border-none bg-transparent text-3xl font-extrabold tracking-tight focus:outline-none {t.title} placeholder:opacity-30"
+				placeholder="Untitled"
+				maxlength={30}
+			/>
+			<svg class="h-5 w-5 shrink-0 opacity-20 transition-opacity group-hover:opacity-40 {t.title}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+				<path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z" />
+			</svg>
+		</div>
 
 		<!-- People -->
 		<div class="mb-4 flex flex-wrap items-center gap-2">
@@ -297,6 +316,7 @@
 					type="text"
 					bind:value={newName}
 					placeholder="Add person"
+					maxlength={15}
 					class="w-28 rounded-lg border px-2.5 py-1 text-xs focus:ring-1 focus:outline-none {t.input}"
 				/>
 				<button type="submit" class="rounded-lg px-2.5 py-1 text-xs font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 {t.addBtn}">+ Add</button>
@@ -338,6 +358,7 @@
 									type="text"
 									bind:value={row.description}
 									placeholder="Enter description"
+									maxlength={60}
 									class="w-full rounded border px-2 py-1.5 text-sm focus:ring-1 focus:outline-none {t.input}"
 								/>
 							</td>
@@ -347,6 +368,7 @@
 									<input
 										type="number"
 										bind:value={row.amount}
+										oninput={() => clampAmount(row)}
 										step="0.01"
 										min="0"
 										placeholder="0.00"
@@ -434,6 +456,7 @@
 								type="text"
 								bind:value={row.description}
 								placeholder="Enter description"
+									maxlength={60}
 								class="w-full rounded border px-3 py-2 text-sm focus:ring-1 focus:outline-none {t.input}"
 							/>
 						</label>
@@ -445,6 +468,7 @@
 								<input
 									type="number"
 									bind:value={row.amount}
+									oninput={() => clampAmount(row)}
 									step="0.01"
 									min="0"
 									placeholder="0.00"
