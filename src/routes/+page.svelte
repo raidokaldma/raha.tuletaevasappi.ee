@@ -367,7 +367,7 @@
 					<tr>
 						<th class="w-[15%] px-2 py-3 text-left text-sm font-semibold {t.th}">Who Paid</th>
 						<th class="w-[25%] px-2 py-3 text-left text-sm font-semibold {t.th}">Description</th>
-						<th class="w-[15%] px-2 py-3 text-right text-sm font-semibold {t.th}">Amount (EUR)</th>
+						<th class="w-[15%] px-2 py-3 text-right text-sm font-semibold {t.th}">Amount</th>
 						<th class="px-2 py-3 text-left text-sm font-semibold {t.th}">Who Received</th>
 						<th class="w-[5%] px-2 py-3 text-center text-sm font-semibold {t.th}"></th>
 					</tr>
@@ -513,7 +513,7 @@
 							</label>
 
 							<label class="block">
-								<span class="mb-1 block text-xs font-medium {t.cardFieldLabel}">Amount (EUR)</span>
+								<span class="mb-1 block text-xs font-medium {t.cardFieldLabel}">Amount</span>
 								<div class="relative">
 									<span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm {t.euro}">&euro;</span>
 									<input
@@ -591,7 +591,7 @@
 		</div>
 
 		<!-- Summary -->
-		<h2 class="mt-10 mb-4 text-xl font-bold {t.title}">Summary per Person</h2>
+		<h2 class="mt-10 mb-4 text-xl font-bold {t.title}">Balance per Person</h2>
 		{#if appState.names.length === 0 || appState.rows.length === 0}
 			<p class="text-sm {t.emptyText}">Add people and expenses to see a summary.</p>
 		{:else}
