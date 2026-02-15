@@ -157,8 +157,8 @@
 			input: 'border-gray-300 bg-white text-gray-900 focus:border-blue-500 focus:ring-blue-500',
 			select: 'border-gray-300 bg-white text-gray-900 focus:border-blue-500 focus:ring-blue-500',
 			euro: 'text-gray-500',
-			pillOn: 'bg-blue-100 text-blue-800',
-			pillOff: 'bg-gray-100 text-gray-500',
+			pillOn: 'border border-blue-500 bg-blue-100 text-blue-800 ring-1 ring-blue-500',
+			pillOff: 'border border-gray-300 bg-gray-100 text-gray-500',
 			deleteBtn: 'text-red-600 hover:bg-red-50 hover:text-red-700 focus:ring-red-500',
 			emptyText: 'text-gray-500',
 			tfoot: 'border-gray-200 bg-gray-50',
@@ -197,8 +197,8 @@
 			input: 'border-slate-600 bg-slate-700 text-slate-100 placeholder:text-slate-500 focus:border-blue-400 focus:ring-blue-400',
 			select: 'border-slate-600 bg-slate-700 text-slate-100 focus:border-blue-400 focus:ring-blue-400',
 			euro: 'text-slate-400',
-			pillOn: 'bg-blue-900 text-blue-300',
-			pillOff: 'bg-slate-700 text-slate-400',
+			pillOn: 'border border-blue-400 bg-blue-900 text-blue-300 ring-1 ring-blue-400',
+			pillOff: 'border border-slate-600 bg-slate-700 text-slate-400',
 			deleteBtn: 'text-red-400 hover:bg-red-900/30 hover:text-red-300 focus:ring-red-400',
 			emptyText: 'text-slate-500',
 			tfoot: 'border-slate-600 bg-slate-800',
@@ -237,8 +237,8 @@
 			input: 'border-pink-300 bg-white text-pink-900 focus:border-pink-500 focus:ring-pink-500',
 			select: 'border-pink-300 bg-white text-pink-900 focus:border-pink-500 focus:ring-pink-500',
 			euro: 'text-pink-400',
-			pillOn: 'bg-pink-200 text-pink-800',
-			pillOff: 'bg-pink-50 text-pink-400',
+			pillOn: 'border border-pink-500 bg-pink-200 text-pink-800 ring-1 ring-pink-500',
+			pillOff: 'border border-pink-300 bg-pink-50 text-pink-400',
 			deleteBtn: 'text-rose-500 hover:bg-rose-50 hover:text-rose-600 focus:ring-rose-400',
 			emptyText: 'text-pink-400',
 			tfoot: 'border-pink-200 bg-pink-50',
@@ -330,7 +330,7 @@
 							<td class="px-4 py-2">
 								<div class="flex flex-wrap gap-1.5">
 									{#each names as n}
-										<label class="inline-flex cursor-pointer items-center gap-1 rounded-full px-2 py-0.5 text-xs transition-colors {row.whoReceived[n] ? t.pillOn : t.pillOff}">
+										<label class="inline-flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors {row.whoReceived[n] ? t.pillOn : t.pillOff}">
 											<input type="checkbox" bind:checked={row.whoReceived[n]} class="sr-only" />
 											{n}
 										</label>
@@ -428,7 +428,7 @@
 							<span class="mb-1 block text-xs font-medium {t.cardFieldLabel}">Who Received</span>
 							<div class="flex flex-wrap gap-1.5">
 								{#each names as n}
-									<label class="inline-flex cursor-pointer items-center gap-1 rounded-full px-2.5 py-1 text-xs transition-colors {row.whoReceived[n] ? t.pillOn : t.pillOff}">
+									<label class="inline-flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors {row.whoReceived[n] ? t.pillOn : t.pillOff}">
 										<input type="checkbox" bind:checked={row.whoReceived[n]} class="sr-only" />
 										{n}
 									</label>
