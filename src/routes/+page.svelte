@@ -299,7 +299,7 @@
 					placeholder="Add person"
 					class="w-28 rounded-lg border px-2.5 py-1 text-xs focus:ring-1 focus:outline-none {t.input}"
 				/>
-				<button type="submit" class="rounded-lg border px-2.5 py-1 text-xs font-medium {t.addBtn}">+ Add</button>
+				<button type="submit" class="rounded-lg px-2.5 py-1 text-xs font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 {t.addBtn}">+ Add</button>
 			</form>
 		</div>
 
