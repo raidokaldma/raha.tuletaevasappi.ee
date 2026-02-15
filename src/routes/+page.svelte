@@ -554,6 +554,9 @@
 						class="cursor-pointer rounded-lg border {t.card} {isRowInvalid(row) ? t.rowInvalid : ''} px-3 py-2 shadow-sm"
 					>
 						<div class="flex items-center gap-2">
+							<svg class="h-4 w-4 shrink-0 {t.cardLabel}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+							</svg>
 							<span class="shrink-0 text-sm font-medium {t.title}">{row.whoPaid || '—'}</span>
 							<span class="min-w-0 flex-1 truncate text-sm {t.cardLabel}">{row.description || 'No description'}</span>
 							<span class="shrink-0 text-sm font-semibold {t.totalValue}">{row.amount ? formatEur(row.amount) + ' \u20AC' : '—'}</span>
