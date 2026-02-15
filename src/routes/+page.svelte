@@ -323,6 +323,8 @@
 			</form>
 		</div>
 
+		<h2 class="mt-6 mb-4 text-xl font-bold {t.title}">Expenses</h2>
+
 		<!-- Desktop table -->
 		<div class="hidden md:block rounded-lg border {t.tableWrapper} shadow-sm">
 			<table class="w-full">
