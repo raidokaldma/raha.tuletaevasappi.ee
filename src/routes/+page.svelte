@@ -323,10 +323,12 @@
 							<td class="px-2 py-2 text-center">
 								<button
 									onclick={() => deleteRow(row.id)}
-									class="rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 {t.deleteBtn}"
+									class="rounded p-1 focus:outline-none focus:ring-1 {t.deleteBtn}"
 									title="Delete row"
 								>
-									Delete
+									<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+										<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+									</svg>
 								</button>
 							</td>
 						</tr>
