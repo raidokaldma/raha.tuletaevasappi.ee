@@ -274,13 +274,18 @@
 		}
 	});
 
-	function toggleCard(id: number) {
+	async function toggleCard(id: number) {
 		if (expandedCards.has(id) || (isRowInvalid(appState.rows.find(r => r.id === id)!) && !collapsedCards.has(id))) {
 			expandedCards = new Set([...expandedCards].filter(x => x !== id));
 			collapsedCards = new Set([...collapsedCards, id]);
 		} else {
 			expandedCards = new Set([...expandedCards, id]);
 			collapsedCards = new Set([...collapsedCards].filter(x => x !== id));
+			await tick();
+			const els = document.querySelectorAll<HTMLSelectElement>(`select[data-row-id="${id}"]`);
+			for (const el of els) {
+				if (el.offsetParent !== null) { el.focus(); break; }
+			}
 		}
 	}
 </script>
