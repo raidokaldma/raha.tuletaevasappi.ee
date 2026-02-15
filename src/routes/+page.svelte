@@ -56,6 +56,10 @@
 		rows = rows.filter((r) => r.id !== id);
 	}
 
+	function isRowInvalid(row: Row): boolean {
+		return !!row.amount && !Object.values(row.whoReceived).some(Boolean);
+	}
+
 	function formatEur(value: number | null): string {
 		if (value === null) return '';
 		return value.toFixed(2);
@@ -66,7 +70,7 @@
 	let summary = $derived(
 		names.map((name) => {
 			const paid = rows
-				.filter((r) => r.whoPaid === name)
+				.filter((r) => r.whoPaid === name && Object.values(r.whoReceived).some(Boolean))
 				.reduce((sum, r) => sum + (r.amount ?? 0), 0);
 
 			const received = rows.reduce((sum, r) => {
@@ -140,6 +144,7 @@
 		settlementArrow: string;
 		settlementTo: string;
 		settlementAmount: string;
+		rowInvalid: string;
 		themeBtn: string;
 		themeBtnActive: string;
 	};
@@ -182,6 +187,7 @@
 			settlementArrow: 'text-gray-400',
 			settlementTo: 'text-gray-900',
 			settlementAmount: 'text-blue-600 bg-blue-50',
+			rowInvalid: 'bg-red-50',
 			themeBtn: 'border-gray-300 bg-white text-gray-700 hover:bg-gray-100',
 			themeBtnActive: 'border-blue-500 bg-blue-50 text-blue-700 ring-1 ring-blue-500'
 		},
@@ -222,6 +228,7 @@
 			settlementArrow: 'text-slate-500',
 			settlementTo: 'text-slate-100',
 			settlementAmount: 'text-blue-300 bg-blue-900/40',
+			rowInvalid: 'bg-red-900/20',
 			themeBtn: 'border-slate-600 bg-slate-800 text-slate-300 hover:bg-slate-700',
 			themeBtnActive: 'border-blue-400 bg-blue-900/40 text-blue-300 ring-1 ring-blue-400'
 		},
@@ -262,6 +269,7 @@
 			settlementArrow: 'text-pink-300',
 			settlementTo: 'text-pink-900',
 			settlementAmount: 'text-pink-700 bg-pink-100',
+			rowInvalid: 'bg-rose-50',
 			themeBtn: 'border-pink-300 bg-white text-pink-700 hover:bg-pink-100',
 			themeBtnActive: 'border-pink-500 bg-pink-100 text-pink-800 ring-1 ring-pink-500'
 		}
@@ -290,7 +298,7 @@
 				</thead>
 				<tbody>
 					{#each rows as row (row.id)}
-						<tr class="border-t {t.rowBorder} {t.row}">
+						<tr class="border-t {t.rowBorder} {isRowInvalid(row) ? t.rowInvalid : t.row}">
 							<td class="px-2 py-2">
 								<div class="grid grid-cols-1">
 									<select
@@ -370,7 +378,7 @@
 		<!-- Mobile cards -->
 		<div class="md:hidden space-y-3">
 			{#each rows as row (row.id)}
-				<div class="rounded-lg border {t.card} p-4 shadow-sm">
+				<div class="rounded-lg border {isRowInvalid(row) ? t.rowInvalid : t.card} p-4 shadow-sm">
 					<div class="mb-3 flex items-center justify-between">
 						<span class="text-xs font-semibold uppercase tracking-wide {t.cardLabel}">Entry</span>
 						<button
