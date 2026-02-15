@@ -599,6 +599,9 @@
 
 		<!-- Summary -->
 		<h2 class="mt-10 mb-4 text-xl font-bold {t.title}">Summary per Person</h2>
+		{#if names.length === 0 || rows.length === 0}
+			<p class="text-sm {t.emptyText}">Add people and expenses to see a summary.</p>
+		{:else}
 		<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
 			{#each summary as person}
 				<div class="rounded-lg border p-4 shadow-sm {t.summaryCard}">
@@ -622,6 +625,7 @@
 				</div>
 			{/each}
 		</div>
+		{/if}
 
 		<!-- Settlements -->
 		<h2 class="mt-10 mb-4 text-xl font-bold {t.title}">Settle Up</h2>
