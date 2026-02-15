@@ -292,14 +292,19 @@
 					{#each rows as row (row.id)}
 						<tr class="border-t {t.rowBorder} {t.row}">
 							<td class="px-4 py-2">
-								<select
-									bind:value={row.whoPaid}
-									class="w-full rounded border px-2 py-1.5 text-sm focus:ring-1 focus:outline-none {t.select}"
-								>
-									{#each names as n}
-										<option value={n}>{n}</option>
-									{/each}
-								</select>
+								<div class="grid grid-cols-1">
+									<select
+										bind:value={row.whoPaid}
+										class="col-start-1 row-start-1 w-full appearance-none rounded-md border py-1.5 pl-2 pr-8 text-sm focus:ring-1 focus:outline-none {t.select}"
+									>
+										{#each names as n}
+											<option value={n}>{n}</option>
+										{/each}
+									</select>
+									<svg class="pointer-events-none col-start-1 row-start-1 mr-2 size-4 self-center justify-self-end {t.euro}" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+										<path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+									</svg>
+								</div>
 							</td>
 							<td class="px-4 py-2">
 								<input
@@ -377,17 +382,22 @@
 					</div>
 
 					<div class="space-y-3">
-						<label class="block">
+						<div class="block">
 							<span class="mb-1 block text-xs font-medium {t.cardFieldLabel}">Who Paid</span>
-							<select
-								bind:value={row.whoPaid}
-								class="w-full rounded border px-3 py-2 text-sm focus:ring-1 focus:outline-none {t.select}"
-							>
-								{#each names as n}
-									<option value={n}>{n}</option>
-								{/each}
-							</select>
-						</label>
+							<div class="grid grid-cols-1">
+								<select
+									bind:value={row.whoPaid}
+									class="col-start-1 row-start-1 w-full appearance-none rounded-md border py-2 pl-3 pr-8 text-sm focus:ring-1 focus:outline-none {t.select}"
+								>
+									{#each names as n}
+										<option value={n}>{n}</option>
+									{/each}
+								</select>
+								<svg class="pointer-events-none col-start-1 row-start-1 mr-2.5 size-4 self-center justify-self-end {t.euro}" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+									<path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+								</svg>
+							</div>
+						</div>
 
 						<label class="block">
 							<span class="mb-1 block text-xs font-medium {t.cardFieldLabel}">Description</span>
