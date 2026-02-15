@@ -571,7 +571,7 @@
 			{/if}
 
 			{#if appState.rows.length > 0}
-				<div class="rounded-lg border {t.totalBar} px-4 py-3">
+				<div class="rounded-lg border {t.totalBar} px-3 py-2">
 					<div class="flex items-center justify-between">
 						<span class="text-sm font-semibold {t.totalLabel}">Total</span>
 						<span class="text-sm font-semibold {t.totalValue}">{formatEur(total)} &euro;</span>
@@ -597,7 +597,7 @@
 		{:else}
 		<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
 			{#each summary as person}
-				<div class="rounded-lg border p-4 shadow-sm {t.summaryCard}">
+				<div class="rounded-lg border px-3 py-2 shadow-sm {t.summaryCard}">
 					<div class="mb-3 text-base font-semibold {t.summaryName}">{person.name}</div>
 					<div class="space-y-1.5 text-sm">
 						<div class="flex justify-between">
@@ -627,7 +627,7 @@
 		{:else}
 			<div class="grid grid-cols-1 gap-2 md:grid-cols-2">
 				{#each settlements as s}
-					<div class="flex items-center gap-3 rounded-lg border p-3 shadow-sm {t.settlementCard}">
+					<div class="flex items-center gap-3 rounded-lg border px-3 py-2 shadow-sm {t.settlementCard}">
 						<span class="text-sm font-semibold {t.settlementFrom}">{s.from}</span>
 						<svg class="h-3.5 w-3.5 shrink-0 {t.settlementArrow}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
 							<path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
