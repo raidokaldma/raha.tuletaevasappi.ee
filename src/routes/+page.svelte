@@ -149,6 +149,9 @@
 		rowInvalid: string;
 		themeBtn: string;
 		themeBtnActive: string;
+		menuDropdown: string;
+		menuItem: string;
+		menuItemActive: string;
 	};
 
 	const themes: Theme[] = [
@@ -191,7 +194,10 @@
 			settlementAmount: 'text-blue-600 bg-blue-50',
 			rowInvalid: 'bg-red-50',
 			themeBtn: 'border-gray-300 bg-white text-gray-700 hover:bg-gray-100',
-			themeBtnActive: 'border-blue-500 bg-blue-50 text-blue-700 ring-1 ring-blue-500'
+			themeBtnActive: 'border-blue-500 bg-blue-50 text-blue-700 ring-1 ring-blue-500',
+			menuDropdown: 'bg-white ring-1 ring-black/5 shadow-lg',
+			menuItem: 'text-gray-700 hover:bg-gray-100 hover:text-gray-900',
+			menuItemActive: 'bg-gray-100 text-gray-900'
 		},
 		{
 			name: 'Midnight',
@@ -232,7 +238,10 @@
 			settlementAmount: 'text-blue-300 bg-blue-900/40',
 			rowInvalid: 'bg-red-900/20',
 			themeBtn: 'border-slate-600 bg-slate-800 text-slate-300 hover:bg-slate-700',
-			themeBtnActive: 'border-blue-400 bg-blue-900/40 text-blue-300 ring-1 ring-blue-400'
+			themeBtnActive: 'border-blue-400 bg-blue-900/40 text-blue-300 ring-1 ring-blue-400',
+			menuDropdown: 'bg-slate-800 ring-1 ring-white/10 shadow-lg',
+			menuItem: 'text-slate-300 hover:bg-slate-700 hover:text-slate-100',
+			menuItemActive: 'bg-slate-700 text-slate-100'
 		},
 		{
 			name: 'Pink Pastel',
@@ -273,7 +282,10 @@
 			settlementAmount: 'text-pink-700 bg-pink-100',
 			rowInvalid: 'bg-rose-50',
 			themeBtn: 'border-pink-300 bg-white text-pink-700 hover:bg-pink-100',
-			themeBtnActive: 'border-pink-500 bg-pink-100 text-pink-800 ring-1 ring-pink-500'
+			themeBtnActive: 'border-pink-500 bg-pink-100 text-pink-800 ring-1 ring-pink-500',
+			menuDropdown: 'bg-white ring-1 ring-black/5 shadow-lg',
+			menuItem: 'text-pink-700 hover:bg-pink-100 hover:text-pink-900',
+			menuItemActive: 'bg-pink-100 text-pink-900'
 		}
 	];
 
@@ -282,21 +294,86 @@
 	let t = $derived(themes[themeIndex]);
 
 	let title = $state('Data Table');
+	let menuOpen = $state(false);
+
+	function resetAll() {
+		title = 'Data Table';
+		names = ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve'];
+		newName = '';
+		nextId = 6;
+		rows = [
+			{ id: 1, whoPaid: 'Alice', description: 'Groceries', amount: 84.50, whoReceived: { ...allNamesOff(), Alice: true, Bob: true, Charlie: true } },
+			{ id: 2, whoPaid: 'Bob', description: 'Electricity bill', amount: 120.00, whoReceived: { ...allNamesOff(), Alice: true, Bob: true, Charlie: true, Diana: true, Eve: true } },
+			{ id: 3, whoPaid: 'Charlie', description: 'Pizza night', amount: 45.00, whoReceived: { ...allNamesOff(), Alice: true, Charlie: true, Eve: true } },
+			{ id: 4, whoPaid: 'Diana', description: 'Taxi ride', amount: 32.00, whoReceived: { ...allNamesOff(), Diana: true, Eve: true } },
+			{ id: 5, whoPaid: 'Eve', description: 'Movie tickets', amount: 60.00, whoReceived: { ...allNamesOff(), Alice: true, Bob: true, Diana: true, Eve: true } }
+		];
+	}
 </script>
+
+<svelte:window onclick={() => { menuOpen = false; }} />
 
 <div class="min-h-screen {t.page} p-4 md:p-8 transition-colors duration-300">
 	<div class="mx-auto max-w-4xl">
-		<div class="mb-6 group flex items-center gap-2 rounded-lg px-3 py-1 -mx-3 -my-1 transition-colors hover:bg-black/5 dark:hover:bg-white/5">
-			<input
-				type="text"
-				bind:value={title}
-				class="block w-full border-none bg-transparent text-3xl font-extrabold tracking-tight focus:outline-none {t.title} placeholder:opacity-30"
-				placeholder="Untitled"
-				maxlength={30}
-			/>
-			<svg class="h-5 w-5 shrink-0 opacity-20 transition-opacity group-hover:opacity-40 {t.title}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-				<path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z" />
-			</svg>
+		<div class="mb-6 flex items-center justify-between gap-4">
+			<div class="group flex min-w-0 flex-1 items-center gap-2 rounded-lg px-3 py-1 -mx-3 -my-1 transition-colors hover:bg-black/5 dark:hover:bg-white/5">
+				<input
+					type="text"
+					bind:value={title}
+					class="block w-full border-none bg-transparent text-3xl font-extrabold tracking-tight focus:outline-none {t.title} placeholder:opacity-30"
+					placeholder="Untitled"
+					maxlength={30}
+				/>
+				<svg class="h-5 w-5 shrink-0 opacity-20 transition-opacity group-hover:opacity-40 {t.title}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z" />
+				</svg>
+			</div>
+
+			<div class="flex shrink-0 items-center gap-1">
+				<!-- Theme menu -->
+				<div class="relative">
+					<button
+						onclick={(e) => { e.stopPropagation(); menuOpen = !menuOpen; }}
+						class="rounded-lg border p-2 transition-colors {menuOpen ? t.themeBtnActive : t.themeBtn}"
+						title="Change theme"
+					>
+						{#if themeIndex === 1}
+							<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+							</svg>
+						{:else}
+							<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+							</svg>
+						{/if}
+					</button>
+
+					{#if menuOpen}
+						<!-- svelte-ignore a11y_no_static_element_interactions a11y_click_events_have_key_events -->
+						<div class="absolute right-0 z-20 mt-2 w-40 origin-top-right rounded-md py-1 {t.menuDropdown}" onclick={(e) => e.stopPropagation()}>
+							{#each themes as theme, i}
+								<button
+									onclick={() => { themeIndex = i; menuOpen = false; }}
+									class="block w-full px-4 py-2 text-left text-sm transition-colors {themeIndex === i ? t.menuItemActive : t.menuItem}"
+								>
+									{theme.name}
+								</button>
+							{/each}
+						</div>
+					{/if}
+				</div>
+
+				<!-- Reset button -->
+				<button
+					onclick={resetAll}
+					class="rounded-lg border p-2 transition-colors {t.themeBtn}"
+					title="Start from scratch"
+				>
+					<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.992 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182M20.015 4.356v4.992" />
+					</svg>
+				</button>
+			</div>
 		</div>
 
 		<!-- People -->
@@ -567,18 +644,6 @@
 			</div>
 		{/if}
 
-		<!-- Theme switcher -->
-		<div class="mt-8 flex items-center gap-2">
-			<span class="text-sm font-medium {t.title}">Theme:</span>
-			{#each themes as theme, i}
-				<button
-					onclick={() => (themeIndex = i)}
-					class="rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors {themeIndex === i ? t.themeBtnActive : t.themeBtn}"
-				>
-					{theme.name}
-				</button>
-			{/each}
-		</div>
 	</div>
 </div>
 
