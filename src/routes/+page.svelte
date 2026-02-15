@@ -194,7 +194,7 @@
 			settlementArrow: 'text-gray-400',
 			settlementTo: 'text-gray-900',
 			settlementAmount: 'text-blue-600 bg-blue-50',
-			rowInvalid: 'bg-red-50',
+			rowInvalid: 'bg-red-50!',
 			themeBtn: 'border-gray-300 bg-white text-gray-700 hover:bg-gray-100',
 			themeBtnActive: 'border-blue-500 bg-blue-50 text-blue-700 ring-1 ring-blue-500',
 			menuDropdown: 'bg-white ring-1 ring-black/5 shadow-lg',
@@ -238,7 +238,7 @@
 			settlementArrow: 'text-slate-500',
 			settlementTo: 'text-slate-100',
 			settlementAmount: 'text-blue-300 bg-blue-900/40',
-			rowInvalid: 'bg-red-900/20',
+			rowInvalid: 'bg-red-900/20!',
 			themeBtn: 'border-slate-600 bg-slate-800 text-slate-300 hover:bg-slate-700',
 			themeBtnActive: 'border-blue-400 bg-blue-900/40 text-blue-300 ring-1 ring-blue-400',
 			menuDropdown: 'bg-slate-800 ring-1 ring-white/10 shadow-lg',
@@ -282,7 +282,7 @@
 			settlementArrow: 'text-pink-300',
 			settlementTo: 'text-pink-900',
 			settlementAmount: 'text-pink-700 bg-pink-100',
-			rowInvalid: 'bg-rose-50',
+			rowInvalid: 'bg-rose-50!',
 			themeBtn: 'border-pink-300 bg-white text-pink-700 hover:bg-pink-100',
 			themeBtnActive: 'border-pink-500 bg-pink-100 text-pink-800 ring-1 ring-pink-500',
 			menuDropdown: 'bg-white ring-1 ring-black/5 shadow-lg',
@@ -502,7 +502,7 @@
 		<!-- Mobile cards -->
 		<div class="md:hidden space-y-3">
 			{#each rows as row (row.id)}
-				<div class="rounded-lg border {isRowInvalid(row) ? t.rowInvalid : t.card} p-4 shadow-sm">
+				<div class="rounded-lg border {t.card} {isRowInvalid(row) ? t.rowInvalid : ''} p-4 shadow-sm">
 					<div class="mb-3 flex items-center justify-between">
 						<span class="text-xs font-semibold uppercase tracking-wide {t.cardLabel}">Entry</span>
 						<button
