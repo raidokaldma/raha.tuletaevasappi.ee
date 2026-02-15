@@ -3,6 +3,17 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<script>
+			(function() {
+				var colors = ['#f9fafb', '#0f172a', '#fdf2f8'];
+				try {
+					var i = parseInt(localStorage.getItem('themeIndex'));
+					if (i >= 0 && i < colors.length) {
+						document.documentElement.style.backgroundColor = colors[i];
+					}
+				} catch(e) {}
+			})();
+		</script>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">
