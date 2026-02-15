@@ -57,6 +57,7 @@
 	type Theme = {
 		name: string;
 		page: string;
+		pageColor: string;
 		title: string;
 		tableWrapper: string;
 		thead: string;
@@ -103,6 +104,7 @@
 		{
 			name: 'Light',
 			page: 'bg-gray-50',
+			pageColor: '#f9fafb',
 			title: 'text-gray-900',
 			tableWrapper: 'border-gray-200 bg-white',
 			thead: 'bg-gray-100/50 backdrop-blur-sm shadow-[0_1px_0_0_rgb(229,231,235)]',
@@ -147,6 +149,7 @@
 		{
 			name: 'Midnight',
 			page: 'bg-slate-900',
+			pageColor: '#0f172a',
 			title: 'text-slate-100',
 			tableWrapper: 'border-slate-700 bg-slate-800',
 			thead: 'bg-slate-700/50 backdrop-blur-sm shadow-[0_1px_0_0_rgb(51,65,85)]',
@@ -191,6 +194,7 @@
 		{
 			name: 'Pink Pastel',
 			page: 'bg-pink-50',
+			pageColor: '#fdf2f8',
 			title: 'text-pink-900',
 			tableWrapper: 'border-pink-200 bg-white',
 			thead: 'bg-pink-100/50 backdrop-blur-sm shadow-[0_1px_0_0_rgb(251,207,232)]',
@@ -247,6 +251,7 @@
 	let themeIndex = $state(loadThemeIndex());
 	$effect(() => { localStorage.setItem('themeIndex', String(themeIndex)); });
 	let t = $derived(themes[themeIndex]);
+	$effect(() => { document.documentElement.style.backgroundColor = t.pageColor; });
 
 	let menuOpen = $state(false);
 
