@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { tick } from 'svelte';
 	import { appState, addName, removeName, addRow, deleteRow, clampAmount, resetAll, type Row } from '$lib/state.svelte';
 
 	function isRowInvalid(row: Row): boolean {
@@ -384,6 +385,7 @@
 								<div class="grid grid-cols-1">
 									<select
 										bind:value={row.whoPaid}
+										data-row-id={row.id}
 										class="col-start-1 row-start-1 w-full appearance-none rounded-md border py-1.5 pl-2 pr-8 text-sm focus:ring-1 focus:outline-none {t.select}"
 									>
 										<option value="">—</option>
@@ -422,10 +424,9 @@
 							<td class="px-2 py-2">
 								<div class="flex flex-wrap gap-1.5">
 									{#each appState.names as n}
-										<label class="inline-flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors {row.whoReceived[n] ? t.pillOn : t.pillOff}">
-											<input type="checkbox" bind:checked={row.whoReceived[n]} class="sr-only" />
+										<button type="button" tabindex="0" onclick={() => row.whoReceived[n] = !row.whoReceived[n]} class="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 focus:outline-none {row.whoReceived[n] ? t.pillOn : t.pillOff}">
 											{n}
-										</label>
+										</button>
 									{/each}
 								</div>
 							</td>
@@ -493,6 +494,7 @@
 								<div class="grid grid-cols-1">
 									<select
 										bind:value={row.whoPaid}
+										data-row-id={row.id}
 										class="col-start-1 row-start-1 w-full appearance-none rounded-md border py-2 pl-3 pr-8 text-sm focus:ring-1 focus:outline-none {t.select}"
 									>
 										<option value="">—</option>
@@ -537,10 +539,9 @@
 								<span class="mb-1 block text-xs font-medium {t.cardFieldLabel}">Who Received</span>
 								<div class="flex flex-wrap gap-1.5">
 									{#each appState.names as n}
-										<label class="inline-flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors {row.whoReceived[n] ? t.pillOn : t.pillOff}">
-											<input type="checkbox" bind:checked={row.whoReceived[n]} class="sr-only" />
+										<button type="button" tabindex="0" onclick={() => row.whoReceived[n] = !row.whoReceived[n]} class="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 focus:outline-none {row.whoReceived[n] ? t.pillOn : t.pillOff}">
 											{n}
-										</label>
+										</button>
 									{/each}
 								</div>
 							</div>
@@ -591,7 +592,17 @@
 		<!-- Add row button -->
 		<div class="mt-4">
 			<button
-				onclick={() => { const id = appState.nextId; addRow(); expandedCards = new Set([...expandedCards, id]); }}
+				tabindex="0"
+				onclick={async () => {
+					const id = appState.nextId;
+					addRow();
+					expandedCards = new Set([...expandedCards, id]);
+					await tick();
+					const els = document.querySelectorAll<HTMLSelectElement>(`select[data-row-id="${id}"]`);
+					for (const el of els) {
+						if (el.offsetParent !== null) { el.focus(); break; }
+					}
+				}}
 				class="rounded-lg px-4 py-2 text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 {t.addBtn}"
 			>
 				+ Add Row
