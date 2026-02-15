@@ -94,6 +94,7 @@
 		settlementTo: string;
 		settlementAmount: string;
 		rowInvalid: string;
+		focusRing: string;
 		themeBtn: string;
 		themeBtnActive: string;
 		menuDropdown: string;
@@ -141,6 +142,7 @@
 			settlementTo: 'text-gray-900',
 			settlementAmount: 'text-blue-600 bg-blue-50',
 			rowInvalid: 'bg-red-50!',
+			focusRing: 'focus:ring-blue-500',
 			themeBtn: 'border-gray-300 bg-white text-gray-700 hover:bg-gray-100',
 			themeBtnActive: 'border-blue-500 bg-blue-50 text-blue-700 ring-1 ring-blue-500',
 			menuDropdown: 'bg-white ring-1 ring-black/5 shadow-lg',
@@ -186,6 +188,7 @@
 			settlementTo: 'text-slate-100',
 			settlementAmount: 'text-blue-300 bg-blue-900/40',
 			rowInvalid: 'bg-red-900/20!',
+			focusRing: 'focus:ring-blue-400',
 			themeBtn: 'border-slate-600 bg-slate-800 text-slate-300 hover:bg-slate-700',
 			themeBtnActive: 'border-blue-400 bg-blue-900/40 text-blue-300 ring-1 ring-blue-400',
 			menuDropdown: 'bg-slate-800 ring-1 ring-white/10 shadow-lg',
@@ -231,6 +234,7 @@
 			settlementTo: 'text-pink-900',
 			settlementAmount: 'text-pink-700 bg-pink-100',
 			rowInvalid: 'bg-rose-50!',
+			focusRing: 'focus:ring-pink-400',
 			themeBtn: 'border-pink-300 bg-white text-pink-700 hover:bg-pink-100',
 			themeBtnActive: 'border-pink-500 bg-pink-100 text-pink-800 ring-1 ring-pink-500',
 			menuDropdown: 'bg-white ring-1 ring-black/5 shadow-lg',
@@ -424,7 +428,7 @@
 							<td class="px-2 py-2">
 								<div class="flex flex-wrap gap-1.5">
 									{#each appState.names as n}
-										<button type="button" tabindex="0" onclick={() => row.whoReceived[n] = !row.whoReceived[n]} class="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 focus:outline-none {row.whoReceived[n] ? t.pillOn : t.pillOff}">
+										<button type="button" tabindex="0" onclick={() => row.whoReceived[n] = !row.whoReceived[n]} class="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none {t.focusRing} {row.whoReceived[n] ? t.pillOn : t.pillOff}">
 											{n}
 										</button>
 									{/each}
@@ -539,7 +543,7 @@
 								<span class="mb-1 block text-xs font-medium {t.cardFieldLabel}">Who Received</span>
 								<div class="flex flex-wrap gap-1.5">
 									{#each appState.names as n}
-										<button type="button" tabindex="0" onclick={() => row.whoReceived[n] = !row.whoReceived[n]} class="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 focus:outline-none {row.whoReceived[n] ? t.pillOn : t.pillOff}">
+										<button type="button" tabindex="0" onclick={() => row.whoReceived[n] = !row.whoReceived[n]} class="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none {t.focusRing} {row.whoReceived[n] ? t.pillOn : t.pillOff}">
 											{n}
 										</button>
 									{/each}
