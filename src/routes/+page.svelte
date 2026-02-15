@@ -542,16 +542,12 @@
 						class="cursor-pointer rounded-lg border {t.card} {isRowInvalid(row) ? t.rowInvalid : ''} px-3 py-2 shadow-sm"
 					>
 						<div class="flex items-center gap-2">
-							<svg class="h-4 w-4 shrink-0 {t.euro}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-								<path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-							</svg>
 							<span class="shrink-0 text-sm font-medium {t.title}">{row.whoPaid || '—'}</span>
 							<span class="min-w-0 flex-1 truncate text-sm {t.cardLabel}">{row.description || 'No description'}</span>
 							<span class="shrink-0 text-sm font-semibold {t.totalValue}">{row.amount ? formatEur(row.amount) + ' \u20AC' : '—'}</span>
 						</div>
 						{#if appState.names.some(n => row.whoReceived[n])}
-							<div class="mt-1 flex flex-wrap items-center gap-1">
-								<svg class="h-3.5 w-3.5 shrink-0 {t.cardLabel}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+							<div class="mt-1 flex flex-wrap items-center gap-1 pl-0">
 								{#each appState.names.filter(n => row.whoReceived[n]) as r}
 									<span class="whitespace-nowrap rounded px-1.5 py-0.5 text-xs {t.pillOn}">{r}</span>
 								{/each}
