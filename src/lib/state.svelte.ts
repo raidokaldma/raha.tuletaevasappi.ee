@@ -11,7 +11,7 @@ function allNamesOff(names: string[] = appState.names): Record<string, boolean> 
 }
 
 function loadState(): { title: string; names: string[]; newName: string; nextId: number; rows: Row[] } {
-	const defaults = { title: 'Data Table', names: [] as string[], newName: '', nextId: 1, rows: [] as Row[] };
+	const defaults = { title: '', names: [] as string[], newName: '', nextId: 1, rows: [] as Row[] };
 	if (typeof window === 'undefined') return defaults;
 	try {
 		const raw = localStorage.getItem('appState');
@@ -67,7 +67,7 @@ export function clampAmount(row: Row) {
 }
 
 export function resetAll() {
-	appState.title = 'Data Table';
+	appState.title = '';
 	appState.names = [];
 	appState.newName = '';
 	appState.nextId = 1;

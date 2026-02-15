@@ -270,7 +270,7 @@
 </script>
 
 <svelte:head>
-	<title>{appState.title || 'Untitled'}</title>
+	<title>{appState.title || 'Untitled event'}</title>
 </svelte:head>
 
 <svelte:window onclick={() => { menuOpen = false; }} />
@@ -283,7 +283,7 @@
 					type="text"
 					bind:value={appState.title}
 					class="block w-full border-none bg-transparent text-3xl font-extrabold tracking-tight focus:outline-none {t.title} placeholder:opacity-30"
-					placeholder="Untitled"
+					placeholder="Untitled event"
 					maxlength={30}
 				/>
 				<svg class="h-5 w-5 shrink-0 opacity-20 transition-opacity group-hover:opacity-40 {t.title}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
