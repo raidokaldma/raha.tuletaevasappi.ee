@@ -377,6 +377,7 @@
 										bind:value={row.whoPaid}
 										class="col-start-1 row-start-1 w-full appearance-none rounded-md border py-1.5 pl-2 pr-8 text-sm focus:ring-1 focus:outline-none {t.select}"
 									>
+										<option value="">—</option>
 										{#each appState.names as n}
 											<option value={n}>{n}</option>
 										{/each}
@@ -485,6 +486,7 @@
 										bind:value={row.whoPaid}
 										class="col-start-1 row-start-1 w-full appearance-none rounded-md border py-2 pl-3 pr-8 text-sm focus:ring-1 focus:outline-none {t.select}"
 									>
+										<option value="">—</option>
 										{#each appState.names as n}
 											<option value={n}>{n}</option>
 										{/each}

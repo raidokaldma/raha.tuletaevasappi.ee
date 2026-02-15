@@ -47,13 +47,13 @@ export function removeName(name: string) {
 	for (const row of appState.rows) {
 		delete row.whoReceived[name];
 		if (row.whoPaid === name) {
-			row.whoPaid = appState.names[0] ?? '';
+			row.whoPaid = '';
 		}
 	}
 }
 
 export function addRow() {
-	appState.rows.push({ id: appState.nextId++, whoPaid: appState.names[0], description: '', amount: null, whoReceived: allNamesOff() });
+	appState.rows.push({ id: appState.nextId++, whoPaid: '', description: '', amount: null, whoReceived: allNamesOff() });
 }
 
 export function deleteRow(id: number) {
