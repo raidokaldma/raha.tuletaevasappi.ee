@@ -1,65 +1,8 @@
 <script lang="ts">
-	let names: string[] = $state(['Alice', 'Bob', 'Charlie', 'Diana', 'Eve']);
-	let newName = $state('');
-
-	type Row = {
-		id: number;
-		whoPaid: string;
-		description: string;
-		amount: number | null;
-		whoReceived: Record<string, boolean>;
-	};
-
-	function allNamesOff(): Record<string, boolean> {
-		return Object.fromEntries(names.map((n) => [n, false]));
-	}
-
-	function addName() {
-		const trimmed = newName.trim();
-		if (!trimmed || names.includes(trimmed)) return;
-		names.push(trimmed);
-		for (const row of rows) {
-			row.whoReceived[trimmed] = false;
-		}
-		newName = '';
-	}
-
-	function removeName(name: string) {
-		names = names.filter((n) => n !== name);
-		for (const row of rows) {
-			delete row.whoReceived[name];
-			if (row.whoPaid === name) {
-				row.whoPaid = names[0] ?? '';
-			}
-		}
-	}
-
-	let nextId = $state(6);
-
-	let rows: Row[] = $state([
-		{ id: 1, whoPaid: 'Alice', description: 'Groceries', amount: 84.50, whoReceived: { ...allNamesOff(), Alice: true, Bob: true, Charlie: true } },
-		{ id: 2, whoPaid: 'Bob', description: 'Electricity bill', amount: 120.00, whoReceived: { ...allNamesOff(), Alice: true, Bob: true, Charlie: true, Diana: true, Eve: true } },
-		{ id: 3, whoPaid: 'Charlie', description: 'Pizza night', amount: 45.00, whoReceived: { ...allNamesOff(), Alice: true, Charlie: true, Eve: true } },
-		{ id: 4, whoPaid: 'Diana', description: 'Taxi ride', amount: 32.00, whoReceived: { ...allNamesOff(), Diana: true, Eve: true } },
-		{ id: 5, whoPaid: 'Eve', description: 'Movie tickets', amount: 60.00, whoReceived: { ...allNamesOff(), Alice: true, Bob: true, Diana: true, Eve: true } }
-	]);
-
-	function addRow() {
-		rows.push({ id: nextId++, whoPaid: names[0], description: '', amount: null, whoReceived: allNamesOff() });
-	}
-
-	function deleteRow(id: number) {
-		rows = rows.filter((r) => r.id !== id);
-	}
+	import { appState, addName, removeName, addRow, deleteRow, clampAmount, resetAll, type Row } from '$lib/state.svelte';
 
 	function isRowInvalid(row: Row): boolean {
 		return !row.whoPaid || (!!row.amount && !Object.values(row.whoReceived).some(Boolean));
-	}
-
-	function clampAmount(row: Row) {
-		if (row.amount === null) return;
-		if (row.amount < 0) row.amount = 0;
-		if (row.amount > 9999.99) row.amount = 9999.99;
 	}
 
 	function formatEur(value: number | null): string {
@@ -67,12 +10,12 @@
 		return value.toFixed(2);
 	}
 
-	let total = $derived(rows.reduce((sum, r) => sum + (r.amount ?? 0), 0));
+	let total = $derived(appState.rows.reduce((sum, r) => sum + (r.amount ?? 0), 0));
 
-	let validRows = $derived(rows.filter((r) => !isRowInvalid(r)));
+	let validRows = $derived(appState.rows.filter((r) => !isRowInvalid(r)));
 
 	let summary = $derived(
-		names.map((name) => {
+		appState.names.map((name) => {
 			const paid = validRows
 				.filter((r) => r.whoPaid === name)
 				.reduce((sum, r) => sum + (r.amount ?? 0), 0);
@@ -295,22 +238,7 @@
 	let themeIndex = $state(prefersDark ? 1 : 0);
 	let t = $derived(themes[themeIndex]);
 
-	let title = $state('Data Table');
 	let menuOpen = $state(false);
-
-	function resetAll() {
-		title = 'Data Table';
-		names = ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve'];
-		newName = '';
-		nextId = 6;
-		rows = [
-			{ id: 1, whoPaid: 'Alice', description: 'Groceries', amount: 84.50, whoReceived: { ...allNamesOff(), Alice: true, Bob: true, Charlie: true } },
-			{ id: 2, whoPaid: 'Bob', description: 'Electricity bill', amount: 120.00, whoReceived: { ...allNamesOff(), Alice: true, Bob: true, Charlie: true, Diana: true, Eve: true } },
-			{ id: 3, whoPaid: 'Charlie', description: 'Pizza night', amount: 45.00, whoReceived: { ...allNamesOff(), Alice: true, Charlie: true, Eve: true } },
-			{ id: 4, whoPaid: 'Diana', description: 'Taxi ride', amount: 32.00, whoReceived: { ...allNamesOff(), Diana: true, Eve: true } },
-			{ id: 5, whoPaid: 'Eve', description: 'Movie tickets', amount: 60.00, whoReceived: { ...allNamesOff(), Alice: true, Bob: true, Diana: true, Eve: true } }
-		];
-	}
 </script>
 
 <svelte:window onclick={() => { menuOpen = false; }} />
@@ -321,7 +249,7 @@
 			<div class="group flex min-w-0 flex-1 items-center gap-2 rounded-lg px-3 py-1 -mx-3 -my-1 transition-colors hover:bg-black/5 dark:hover:bg-white/5">
 				<input
 					type="text"
-					bind:value={title}
+					bind:value={appState.title}
 					class="block w-full border-none bg-transparent text-3xl font-extrabold tracking-tight focus:outline-none {t.title} placeholder:opacity-30"
 					placeholder="Untitled"
 					maxlength={30}
@@ -380,7 +308,7 @@
 
 		<!-- People -->
 		<div class="mb-4 flex flex-wrap items-center gap-2">
-			{#each names as name}
+			{#each appState.names as name}
 				<span class="inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-medium {t.pillOn}">
 					{name}
 					<button onclick={() => removeName(name)} class="ml-0.5 opacity-60 hover:opacity-100" title="Remove {name}">
@@ -393,7 +321,7 @@
 			<form onsubmit={(e) => { e.preventDefault(); addName(); }} class="inline-flex items-center gap-1">
 				<input
 					type="text"
-					bind:value={newName}
+					bind:value={appState.newName}
 					placeholder="Add person"
 					maxlength={15}
 					class="w-28 rounded-lg border px-2.5 py-1 text-xs focus:ring-1 focus:outline-none {t.input}"
@@ -417,7 +345,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each rows as row (row.id)}
+					{#each appState.rows as row (row.id)}
 						<tr class="border-t {t.rowBorder} {isRowInvalid(row) ? t.rowInvalid : t.row}">
 							<td class="px-2 py-2">
 								<div class="grid grid-cols-1">
@@ -425,7 +353,7 @@
 										bind:value={row.whoPaid}
 										class="col-start-1 row-start-1 w-full appearance-none rounded-md border py-1.5 pl-2 pr-8 text-sm focus:ring-1 focus:outline-none {t.select}"
 									>
-										{#each names as n}
+										{#each appState.names as n}
 											<option value={n}>{n}</option>
 										{/each}
 									</select>
@@ -459,7 +387,7 @@
 							</td>
 							<td class="px-2 py-2">
 								<div class="flex flex-wrap gap-1.5">
-									{#each names as n}
+									{#each appState.names as n}
 										<label class="inline-flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors {row.whoReceived[n] ? t.pillOn : t.pillOff}">
 											<input type="checkbox" bind:checked={row.whoReceived[n]} class="sr-only" />
 											{n}
@@ -480,7 +408,7 @@
 							</td>
 						</tr>
 					{/each}
-					{#if rows.length === 0}
+					{#if appState.rows.length === 0}
 						<tr>
 							<td colspan="5" class="px-2 py-8 text-center text-sm {t.emptyText}">
 								No rows yet. Click "Add Row" to get started.
@@ -501,7 +429,7 @@
 
 		<!-- Mobile cards -->
 		<div class="md:hidden space-y-3">
-			{#each rows as row (row.id)}
+			{#each appState.rows as row (row.id)}
 				<div class="rounded-lg border {t.card} {isRowInvalid(row) ? t.rowInvalid : ''} p-4 shadow-sm">
 					<div class="mb-3 flex items-center justify-between">
 						<span class="text-xs font-semibold uppercase tracking-wide {t.cardLabel}">Entry</span>
@@ -521,7 +449,7 @@
 									bind:value={row.whoPaid}
 									class="col-start-1 row-start-1 w-full appearance-none rounded-md border py-2 pl-3 pr-8 text-sm focus:ring-1 focus:outline-none {t.select}"
 								>
-									{#each names as n}
+									{#each appState.names as n}
 										<option value={n}>{n}</option>
 									{/each}
 								</select>
@@ -561,7 +489,7 @@
 						<div>
 							<span class="mb-1 block text-xs font-medium {t.cardFieldLabel}">Who Received</span>
 							<div class="flex flex-wrap gap-1.5">
-								{#each names as n}
+								{#each appState.names as n}
 									<label class="inline-flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors {row.whoReceived[n] ? t.pillOn : t.pillOff}">
 										<input type="checkbox" bind:checked={row.whoReceived[n]} class="sr-only" />
 										{n}
@@ -573,13 +501,13 @@
 				</div>
 			{/each}
 
-			{#if rows.length === 0}
+			{#if appState.rows.length === 0}
 				<div class="rounded-lg border {t.card} p-8 text-center text-sm {t.emptyText}">
 					No rows yet. Click "Add Row" to get started.
 				</div>
 			{/if}
 
-			{#if rows.length > 0}
+			{#if appState.rows.length > 0}
 				<div class="rounded-lg border {t.totalBar} px-4 py-3">
 					<div class="flex items-center justify-between">
 						<span class="text-sm font-semibold {t.totalLabel}">Total</span>
@@ -601,7 +529,7 @@
 
 		<!-- Summary -->
 		<h2 class="mt-10 mb-4 text-xl font-bold {t.title}">Summary per Person</h2>
-		{#if names.length === 0 || rows.length === 0}
+		{#if appState.names.length === 0 || appState.rows.length === 0}
 			<p class="text-sm {t.emptyText}">Add people and expenses to see a summary.</p>
 		{:else}
 		<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
