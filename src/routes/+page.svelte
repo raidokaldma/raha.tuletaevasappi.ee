@@ -281,11 +281,11 @@
 			<table class="w-full">
 				<thead class="sticky top-0 z-10 {t.thead}">
 					<tr>
-						<th class="w-[12%] px-4 py-3 text-left text-sm font-semibold {t.th}">Who Paid</th>
-						<th class="w-[22%] px-4 py-3 text-left text-sm font-semibold {t.th}">Description</th>
-						<th class="w-[18%] px-4 py-3 text-right text-sm font-semibold {t.th}">Amount (EUR)</th>
-						<th class="w-[40%] px-4 py-3 text-left text-sm font-semibold {t.th}">Who Received</th>
-						<th class="w-[8%] px-4 py-3 text-center text-sm font-semibold {t.th}"></th>
+						<th class="w-[15%] px-4 py-3 text-left text-sm font-semibold {t.th}">Who Paid</th>
+						<th class="w-[25%] px-4 py-3 text-left text-sm font-semibold {t.th}">Description</th>
+						<th class="w-[15%] px-4 py-3 text-right text-sm font-semibold {t.th}">Amount (EUR)</th>
+						<th class="px-4 py-3 text-left text-sm font-semibold {t.th}">Who Received</th>
+						<th class="w-[5%] px-4 py-3 text-center text-sm font-semibold {t.th}"></th>
 					</tr>
 				</thead>
 				<tbody>
