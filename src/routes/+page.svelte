@@ -622,7 +622,7 @@
 		{#if settlements.length === 0}
 			<p class="text-sm {t.emptyText}">All settled up — no payments needed.</p>
 		{:else}
-			<div class="space-y-2">
+			<div class="grid grid-cols-1 gap-2 md:grid-cols-2">
 				{#each settlements as s}
 					<div class="flex items-center gap-3 rounded-lg border p-3 shadow-sm {t.settlementCard}">
 						<span class="text-sm font-semibold {t.settlementFrom}">{s.from}</span>
