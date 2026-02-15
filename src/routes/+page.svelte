@@ -1,5 +1,6 @@
 <script lang="ts">
-	const names = ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve'];
+	let names: string[] = $state(['Alice', 'Bob', 'Charlie', 'Diana', 'Eve']);
+	let newName = $state('');
 
 	type Row = {
 		id: number;
@@ -11,6 +12,26 @@
 
 	function allNamesOff(): Record<string, boolean> {
 		return Object.fromEntries(names.map((n) => [n, false]));
+	}
+
+	function addName() {
+		const trimmed = newName.trim();
+		if (!trimmed || names.includes(trimmed)) return;
+		names.push(trimmed);
+		for (const row of rows) {
+			row.whoReceived[trimmed] = false;
+		}
+		newName = '';
+	}
+
+	function removeName(name: string) {
+		names = names.filter((n) => n !== name);
+		for (const row of rows) {
+			delete row.whoReceived[name];
+			if (row.whoPaid === name) {
+				row.whoPaid = names[0] ?? '';
+			}
+		}
 	}
 
 	let nextId = $state(6);
@@ -258,6 +279,29 @@
 <div class="min-h-screen {t.page} p-4 md:p-8 transition-colors duration-300">
 	<div class="mx-auto max-w-4xl">
 		<h1 class="mb-6 text-2xl font-bold {t.title}">Data Table</h1>
+
+		<!-- People -->
+		<div class="mb-4 flex flex-wrap items-center gap-2">
+			{#each names as name}
+				<span class="inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-medium {t.pillOn}">
+					{name}
+					<button onclick={() => removeName(name)} class="ml-0.5 opacity-60 hover:opacity-100" title="Remove {name}">
+						<svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+						</svg>
+					</button>
+				</span>
+			{/each}
+			<form onsubmit={(e) => { e.preventDefault(); addName(); }} class="inline-flex items-center gap-1">
+				<input
+					type="text"
+					bind:value={newName}
+					placeholder="Add person"
+					class="w-28 rounded-lg border px-2.5 py-1 text-xs focus:ring-1 focus:outline-none {t.input}"
+				/>
+				<button type="submit" class="rounded-lg border px-2.5 py-1 text-xs font-medium {t.addBtn}">+ Add</button>
+			</form>
+		</div>
 
 		<!-- Desktop table -->
 		<div class="hidden md:block rounded-lg border {t.tableWrapper} shadow-sm">
