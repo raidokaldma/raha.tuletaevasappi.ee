@@ -259,6 +259,7 @@
 	$effect(() => { document.documentElement.style.backgroundColor = t.pageColor; });
 
 	let menuOpen = $state(false);
+	let themeBtn: HTMLButtonElement;
 
 	let expandedCards: Set<number> = $state(new Set());
 	let collapsedCards: Set<number> = $state(new Set());
@@ -300,8 +301,11 @@
 				<!-- Theme menu -->
 				<div class="relative">
 					<button
-						onclick={(e) => { e.stopPropagation(); menuOpen = !menuOpen; }}
-						class="rounded-lg border p-2 transition-colors {menuOpen ? t.themeBtnActive : t.themeBtn}"
+						bind:this={themeBtn}
+						tabindex="0"
+						onclick={async (e) => { e.stopPropagation(); menuOpen = !menuOpen; if (menuOpen) { await tick(); document.querySelector<HTMLButtonElement>('.theme-menu-item')?.focus(); } }}
+						onkeydown={async (e) => { if (e.key === 'ArrowDown' && !menuOpen) { menuOpen = true; await tick(); document.querySelector<HTMLButtonElement>('.theme-menu-item')?.focus(); } if (e.key === 'Escape' && menuOpen) { e.stopPropagation(); menuOpen = false; themeBtn?.focus(); } }}
+						class="rounded-lg border p-2 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 {t.focusRing} {menuOpen ? t.themeBtnActive : t.themeBtn}"
 						title="Change theme"
 					>
 						{#if themeIndex === 1}
@@ -317,11 +321,25 @@
 
 					{#if menuOpen}
 						<!-- svelte-ignore a11y_no_static_element_interactions a11y_click_events_have_key_events -->
-						<div class="absolute right-0 z-20 mt-2 w-40 origin-top-right rounded-md py-1 {t.menuDropdown}" onclick={(e) => e.stopPropagation()}>
+						<div
+							class="absolute right-0 z-20 mt-2 w-40 origin-top-right rounded-md py-1 {t.menuDropdown}"
+							onclick={(e) => e.stopPropagation()}
+							onkeydown={(e) => {
+								if (e.key === 'Escape') { menuOpen = false; themeBtn?.focus(); }
+								if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+									e.preventDefault();
+									const items = [...e.currentTarget.querySelectorAll('button')];
+									const idx = items.indexOf(document.activeElement as HTMLButtonElement);
+									const next = e.key === 'ArrowDown' ? (idx + 1) % items.length : (idx - 1 + items.length) % items.length;
+									items[next]?.focus();
+								}
+							}}
+						>
 							{#each themes as theme, i}
 								<button
-									onclick={() => { themeIndex = i; menuOpen = false; }}
-									class="block w-full px-4 py-2 text-left text-sm transition-colors {themeIndex === i ? t.menuItemActive : t.menuItem}"
+									tabindex="0"
+									onclick={() => { themeIndex = i; menuOpen = false; themeBtn?.focus(); }}
+									class="theme-menu-item block w-full px-4 py-2 text-left text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-inset {t.focusRing} {themeIndex === i ? t.menuItemActive : t.menuItem}"
 								>
 									{theme.name}
 								</button>
@@ -332,8 +350,9 @@
 
 				<!-- Reset button -->
 				<button
+					tabindex="0"
 					onclick={resetAll}
-					class="rounded-lg border p-2 transition-colors {t.themeBtn}"
+					class="rounded-lg border p-2 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 {t.focusRing} {t.themeBtn}"
 					title="Start from scratch"
 				>
 					<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -349,7 +368,7 @@
 			{#each appState.names as name}
 				<span class="inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-medium {t.pillOn}">
 					{name}
-					<button onclick={() => removeName(name)} class="ml-0.5 opacity-60 hover:opacity-100" title="Remove {name}">
+					<button tabindex="0" onclick={() => removeName(name)} class="ml-0.5 rounded opacity-60 hover:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-1 {t.focusRing}" title="Remove {name}">
 						<svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
 							<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
 						</svg>
@@ -364,7 +383,7 @@
 					maxlength={15}
 					class="w-28 rounded-lg border px-2.5 py-1 text-xs focus:ring-1 focus:outline-none {t.input}"
 				/>
-				<button type="submit" class="rounded-lg px-2.5 py-1 text-xs font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 {t.addBtn}">+ Add</button>
+				<button tabindex="0" type="submit" class="rounded-lg px-2.5 py-1 text-xs font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 {t.addBtn}">+ Add</button>
 			</form>
 		</div>
 
@@ -436,8 +455,9 @@
 							</td>
 							<td class="px-2 py-2 text-center">
 								<button
+									tabindex="0"
 									onclick={() => deleteRow(row.id)}
-									class="rounded p-1 focus:outline-none focus:ring-1 {t.deleteBtn}"
+									class="rounded p-1 focus:outline-none focus:ring-2 focus:ring-offset-2 {t.focusRing} {t.deleteBtn}"
 									title="Delete row"
 								>
 									<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -472,25 +492,25 @@
 				{#if expandedCards.has(row.id) || (isRowInvalid(row) && !collapsedCards.has(row.id))}
 					<!-- Expanded card -->
 					<div class="rounded-lg border {t.card} {isRowInvalid(row) ? t.rowInvalid : ''} px-3 py-2 shadow-sm">
-						<button
-							onclick={() => toggleCard(row.id)}
-							class="mb-3 flex w-full cursor-pointer items-center justify-between"
-						>
-							<span class="flex items-center gap-1 text-xs font-semibold uppercase tracking-wide {t.cardLabel}">
+						<div class="mb-3 flex w-full items-center justify-between">
+							<button
+								tabindex="0"
+								onclick={() => toggleCard(row.id)}
+								class="flex cursor-pointer items-center gap-1 text-xs font-semibold uppercase tracking-wide focus:outline-none focus:ring-2 focus:ring-offset-2 {t.focusRing} {t.cardLabel} rounded px-1 py-0.5"
+							>
 								<svg class="h-4 w-4 rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
 									<path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
 								</svg>
 								Entry
-							</span>
-							<span
-								onclick={(e) => { e.stopPropagation(); deleteRow(row.id); }}
-								role="button"
-								tabindex="-1"
-								class="rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 {t.deleteBtn}"
+							</button>
+							<button
+								tabindex="0"
+								onclick={() => deleteRow(row.id)}
+								class="rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 {t.focusRing} {t.deleteBtn}"
 							>
 								Delete
-							</span>
-						</button>
+							</button>
+						</div>
 
 						<div class="space-y-3">
 							<div class="block">
@@ -553,10 +573,10 @@
 					</div>
 				{:else}
 					<!-- Collapsed compact card -->
-					<!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
-					<div
+					<button
+						tabindex="0"
 						onclick={() => toggleCard(row.id)}
-						class="cursor-pointer rounded-lg border {t.card} {isRowInvalid(row) ? t.rowInvalid : ''} px-3 py-2 shadow-sm"
+						class="w-full cursor-pointer rounded-lg border text-left {t.card} {isRowInvalid(row) ? t.rowInvalid : ''} px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 {t.focusRing}"
 					>
 						<div class="flex items-center gap-2">
 							<svg class="h-4 w-4 shrink-0 {t.cardLabel}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -573,7 +593,7 @@
 								{/each}
 							</div>
 						{/if}
-					</div>
+					</button>
 				{/if}
 			{/each}
 
