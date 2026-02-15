@@ -235,7 +235,17 @@
 	];
 
 	const prefersDark = typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches;
-	let themeIndex = $state(prefersDark ? 1 : 0);
+	function loadThemeIndex(): number {
+		if (typeof window === 'undefined') return 0;
+		const saved = localStorage.getItem('themeIndex');
+		if (saved !== null) {
+			const i = Number(saved);
+			if (i >= 0 && i < themes.length) return i;
+		}
+		return prefersDark ? 1 : 0;
+	}
+	let themeIndex = $state(loadThemeIndex());
+	$effect(() => { localStorage.setItem('themeIndex', String(themeIndex)); });
 	let t = $derived(themes[themeIndex]);
 
 	let menuOpen = $state(false);
