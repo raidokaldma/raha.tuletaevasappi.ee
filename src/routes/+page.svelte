@@ -626,7 +626,7 @@
 				{#each settlements as s}
 					<div class="flex items-center gap-3 rounded-lg border p-3 shadow-sm {t.settlementCard}">
 						<span class="text-sm font-semibold {t.settlementFrom}">{s.from}</span>
-						<svg class="h-4 w-4 shrink-0 {t.settlementArrow}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+						<svg class="h-3.5 w-3.5 shrink-0 {t.settlementArrow}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
 							<path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
 						</svg>
 						<span class="text-sm font-semibold {t.settlementTo}">{s.to}</span>
