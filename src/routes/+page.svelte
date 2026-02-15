@@ -264,6 +264,16 @@
 	let expandedCards: Set<number> = $state(new Set());
 	let collapsedCards: Set<number> = $state(new Set());
 
+	// Keep invalid rows in expandedCards so they stay open after the error is fixed
+	$effect(() => {
+		const toAdd = appState.rows
+			.filter(row => isRowInvalid(row) && !collapsedCards.has(row.id) && !expandedCards.has(row.id))
+			.map(row => row.id);
+		if (toAdd.length > 0) {
+			expandedCards = new Set([...expandedCards, ...toAdd]);
+		}
+	});
+
 	function toggleCard(id: number) {
 		if (expandedCards.has(id) || (isRowInvalid(appState.rows.find(r => r.id === id)!) && !collapsedCards.has(id))) {
 			expandedCards = new Set([...expandedCards].filter(x => x !== id));
