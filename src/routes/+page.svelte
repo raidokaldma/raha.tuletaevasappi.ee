@@ -281,17 +281,17 @@
 			<table class="w-full">
 				<thead class="sticky top-0 z-10 {t.thead}">
 					<tr>
-						<th class="w-[15%] px-4 py-3 text-left text-sm font-semibold {t.th}">Who Paid</th>
-						<th class="w-[25%] px-4 py-3 text-left text-sm font-semibold {t.th}">Description</th>
-						<th class="w-[15%] px-4 py-3 text-right text-sm font-semibold {t.th}">Amount (EUR)</th>
-						<th class="px-4 py-3 text-left text-sm font-semibold {t.th}">Who Received</th>
-						<th class="w-[5%] px-4 py-3 text-center text-sm font-semibold {t.th}"></th>
+						<th class="w-[15%] px-2 py-3 text-left text-sm font-semibold {t.th}">Who Paid</th>
+						<th class="w-[25%] px-2 py-3 text-left text-sm font-semibold {t.th}">Description</th>
+						<th class="w-[15%] px-2 py-3 text-right text-sm font-semibold {t.th}">Amount (EUR)</th>
+						<th class="px-2 py-3 text-left text-sm font-semibold {t.th}">Who Received</th>
+						<th class="w-[5%] px-2 py-3 text-center text-sm font-semibold {t.th}"></th>
 					</tr>
 				</thead>
 				<tbody>
 					{#each rows as row (row.id)}
 						<tr class="border-t {t.rowBorder} {t.row}">
-							<td class="px-4 py-2">
+							<td class="px-2 py-2">
 								<div class="grid grid-cols-1">
 									<select
 										bind:value={row.whoPaid}
@@ -306,7 +306,7 @@
 									</svg>
 								</div>
 							</td>
-							<td class="px-4 py-2">
+							<td class="px-2 py-2">
 								<input
 									type="text"
 									bind:value={row.description}
@@ -314,7 +314,7 @@
 									class="w-full rounded border px-2 py-1.5 text-sm focus:ring-1 focus:outline-none {t.input}"
 								/>
 							</td>
-							<td class="px-4 py-2">
+							<td class="px-2 py-2">
 								<div class="relative">
 									<span class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-sm {t.euro}">&euro;</span>
 									<input
@@ -327,7 +327,7 @@
 									/>
 								</div>
 							</td>
-							<td class="px-4 py-2">
+							<td class="px-2 py-2">
 								<div class="flex flex-wrap gap-1.5">
 									{#each names as n}
 										<label class="inline-flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors {row.whoReceived[n] ? t.pillOn : t.pillOff}">
@@ -337,7 +337,7 @@
 									{/each}
 								</div>
 							</td>
-							<td class="px-4 py-2 text-center">
+							<td class="px-2 py-2 text-center">
 								<button
 									onclick={() => deleteRow(row.id)}
 									class="rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 {t.deleteBtn}"
@@ -350,7 +350,7 @@
 					{/each}
 					{#if rows.length === 0}
 						<tr>
-							<td colspan="5" class="px-4 py-8 text-center text-sm {t.emptyText}">
+							<td colspan="5" class="px-2 py-8 text-center text-sm {t.emptyText}">
 								No rows yet. Click "Add Row" to get started.
 							</td>
 						</tr>
@@ -358,8 +358,8 @@
 				</tbody>
 				<tfoot class="border-t-2 {t.tfoot}">
 					<tr>
-						<td colspan="2" class="px-4 py-3 text-sm font-semibold {t.tfootLabel}">Total</td>
-						<td class="px-4 py-3 text-right text-sm font-semibold {t.tfootValue}">{formatEur(total)} &euro;</td>
+						<td colspan="2" class="px-2 py-3 text-sm font-semibold {t.tfootLabel}">Total</td>
+						<td class="px-2 py-3 text-right text-sm font-semibold {t.tfootValue}">{formatEur(total)} &euro;</td>
 						<td></td>
 						<td></td>
 					</tr>
