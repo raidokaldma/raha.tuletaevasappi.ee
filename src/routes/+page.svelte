@@ -249,6 +249,19 @@
 	let t = $derived(themes[themeIndex]);
 
 	let menuOpen = $state(false);
+
+	let expandedCards: Set<number> = $state(new Set());
+	let collapsedCards: Set<number> = $state(new Set());
+
+	function toggleCard(id: number) {
+		if (expandedCards.has(id) || (isRowInvalid(appState.rows.find(r => r.id === id)!) && !collapsedCards.has(id))) {
+			expandedCards = new Set([...expandedCards].filter(x => x !== id));
+			collapsedCards = new Set([...collapsedCards, id]);
+		} else {
+			expandedCards = new Set([...expandedCards, id]);
+			collapsedCards = new Set([...collapsedCards].filter(x => x !== id));
+		}
+	}
 </script>
 
 <svelte:window onclick={() => { menuOpen = false; }} />
@@ -438,77 +451,114 @@
 		</div>
 
 		<!-- Mobile cards -->
-		<div class="md:hidden space-y-3">
+		<div class="md:hidden space-y-1.5">
 			{#each appState.rows as row (row.id)}
-				<div class="rounded-lg border {t.card} {isRowInvalid(row) ? t.rowInvalid : ''} p-4 shadow-sm">
-					<div class="mb-3 flex items-center justify-between">
-						<span class="text-xs font-semibold uppercase tracking-wide {t.cardLabel}">Entry</span>
+				{#if expandedCards.has(row.id) || (isRowInvalid(row) && !collapsedCards.has(row.id))}
+					<!-- Expanded card -->
+					<div class="rounded-lg border {t.card} {isRowInvalid(row) ? t.rowInvalid : ''} px-3 py-2 shadow-sm">
 						<button
-							onclick={() => deleteRow(row.id)}
-							class="rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 {t.deleteBtn}"
+							onclick={() => toggleCard(row.id)}
+							class="mb-3 flex w-full cursor-pointer items-center justify-between"
 						>
-							Delete
-						</button>
-					</div>
-
-					<div class="space-y-3">
-						<div class="block">
-							<span class="mb-1 block text-xs font-medium {t.cardFieldLabel}">Who Paid</span>
-							<div class="grid grid-cols-1">
-								<select
-									bind:value={row.whoPaid}
-									class="col-start-1 row-start-1 w-full appearance-none rounded-md border py-2 pl-3 pr-8 text-sm focus:ring-1 focus:outline-none {t.select}"
-								>
-									{#each appState.names as n}
-										<option value={n}>{n}</option>
-									{/each}
-								</select>
-								<svg class="pointer-events-none col-start-1 row-start-1 mr-2.5 size-4 self-center justify-self-end {t.euro}" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-									<path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+							<span class="flex items-center gap-1 text-xs font-semibold uppercase tracking-wide {t.cardLabel}">
+								<svg class="h-4 w-4 rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+									<path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
 								</svg>
+								Entry
+							</span>
+							<span
+								onclick={(e) => { e.stopPropagation(); deleteRow(row.id); }}
+								role="button"
+								tabindex="-1"
+								class="rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 {t.deleteBtn}"
+							>
+								Delete
+							</span>
+						</button>
+
+						<div class="space-y-3">
+							<div class="block">
+								<span class="mb-1 block text-xs font-medium {t.cardFieldLabel}">Who Paid</span>
+								<div class="grid grid-cols-1">
+									<select
+										bind:value={row.whoPaid}
+										class="col-start-1 row-start-1 w-full appearance-none rounded-md border py-2 pl-3 pr-8 text-sm focus:ring-1 focus:outline-none {t.select}"
+									>
+										{#each appState.names as n}
+											<option value={n}>{n}</option>
+										{/each}
+									</select>
+									<svg class="pointer-events-none col-start-1 row-start-1 mr-2.5 size-4 self-center justify-self-end {t.euro}" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+										<path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+									</svg>
+								</div>
+							</div>
+
+							<label class="block">
+								<span class="mb-1 block text-xs font-medium {t.cardFieldLabel}">Description</span>
+								<input
+									type="text"
+									bind:value={row.description}
+									placeholder="Enter description"
+									maxlength={60}
+									class="w-full rounded border px-3 py-2 text-sm focus:ring-1 focus:outline-none {t.input}"
+								/>
+							</label>
+
+							<label class="block">
+								<span class="mb-1 block text-xs font-medium {t.cardFieldLabel}">Amount (EUR)</span>
+								<div class="relative">
+									<span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm {t.euro}">&euro;</span>
+									<input
+										type="number"
+										bind:value={row.amount}
+										oninput={() => clampAmount(row)}
+										step="0.01"
+										min="0"
+										placeholder="0.00"
+										class="w-full rounded border px-3 py-2 pr-8 text-right text-sm focus:ring-1 focus:outline-none {t.input}"
+									/>
+								</div>
+							</label>
+
+							<div>
+								<span class="mb-1 block text-xs font-medium {t.cardFieldLabel}">Who Received</span>
+								<div class="flex flex-wrap gap-1.5">
+									{#each appState.names as n}
+										<label class="inline-flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors {row.whoReceived[n] ? t.pillOn : t.pillOff}">
+											<input type="checkbox" bind:checked={row.whoReceived[n]} class="sr-only" />
+											{n}
+										</label>
+									{/each}
+								</div>
 							</div>
 						</div>
-
-						<label class="block">
-							<span class="mb-1 block text-xs font-medium {t.cardFieldLabel}">Description</span>
-							<input
-								type="text"
-								bind:value={row.description}
-								placeholder="Enter description"
-									maxlength={60}
-								class="w-full rounded border px-3 py-2 text-sm focus:ring-1 focus:outline-none {t.input}"
-							/>
-						</label>
-
-						<label class="block">
-							<span class="mb-1 block text-xs font-medium {t.cardFieldLabel}">Amount (EUR)</span>
-							<div class="relative">
-								<span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm {t.euro}">&euro;</span>
-								<input
-									type="number"
-									bind:value={row.amount}
-									oninput={() => clampAmount(row)}
-									step="0.01"
-									min="0"
-									placeholder="0.00"
-									class="w-full rounded border px-3 py-2 pr-8 text-right text-sm focus:ring-1 focus:outline-none {t.input}"
-								/>
-							</div>
-						</label>
-
-						<div>
-							<span class="mb-1 block text-xs font-medium {t.cardFieldLabel}">Who Received</span>
-							<div class="flex flex-wrap gap-1.5">
-								{#each appState.names as n}
-									<label class="inline-flex cursor-pointer items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors {row.whoReceived[n] ? t.pillOn : t.pillOff}">
-										<input type="checkbox" bind:checked={row.whoReceived[n]} class="sr-only" />
-										{n}
-									</label>
+					</div>
+				{:else}
+					<!-- Collapsed compact card -->
+					<!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
+					<div
+						onclick={() => toggleCard(row.id)}
+						class="cursor-pointer rounded-lg border {t.card} {isRowInvalid(row) ? t.rowInvalid : ''} px-3 py-2 shadow-sm"
+					>
+						<div class="flex items-center gap-2">
+							<svg class="h-4 w-4 shrink-0 {t.euro}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+							</svg>
+							<span class="shrink-0 text-sm font-medium {t.title}">{row.whoPaid || '—'}</span>
+							<span class="min-w-0 flex-1 truncate text-sm {t.cardLabel}">{row.description || 'No description'}</span>
+							<span class="shrink-0 text-sm font-semibold {t.totalValue}">{row.amount ? formatEur(row.amount) + ' \u20AC' : '—'}</span>
+						</div>
+						{#if appState.names.some(n => row.whoReceived[n])}
+							<div class="mt-1 flex flex-wrap items-center gap-1">
+								<svg class="h-3.5 w-3.5 shrink-0 {t.cardLabel}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+								{#each appState.names.filter(n => row.whoReceived[n]) as r}
+									<span class="whitespace-nowrap rounded px-1.5 py-0.5 text-xs {t.pillOn}">{r}</span>
 								{/each}
 							</div>
-						</div>
+						{/if}
 					</div>
-				</div>
+				{/if}
 			{/each}
 
 			{#if appState.rows.length === 0}
@@ -530,7 +580,7 @@
 		<!-- Add row button -->
 		<div class="mt-4">
 			<button
-				onclick={addRow}
+				onclick={() => { const id = appState.nextId; addRow(); expandedCards = new Set([...expandedCards, id]); }}
 				class="rounded-lg px-4 py-2 text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 {t.addBtn}"
 			>
 				+ Add Row
