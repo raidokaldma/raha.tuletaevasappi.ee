@@ -53,7 +53,7 @@
 	}
 
 	function isRowInvalid(row: Row): boolean {
-		return !!row.amount && !Object.values(row.whoReceived).some(Boolean);
+		return !row.whoPaid || (!!row.amount && !Object.values(row.whoReceived).some(Boolean));
 	}
 
 	function clampAmount(row: Row) {
@@ -69,13 +69,15 @@
 
 	let total = $derived(rows.reduce((sum, r) => sum + (r.amount ?? 0), 0));
 
+	let validRows = $derived(rows.filter((r) => !isRowInvalid(r)));
+
 	let summary = $derived(
 		names.map((name) => {
-			const paid = rows
-				.filter((r) => r.whoPaid === name && Object.values(r.whoReceived).some(Boolean))
+			const paid = validRows
+				.filter((r) => r.whoPaid === name)
 				.reduce((sum, r) => sum + (r.amount ?? 0), 0);
 
-			const received = rows.reduce((sum, r) => {
+			const received = validRows.reduce((sum, r) => {
 				if (!r.whoReceived[name] || !r.amount) return sum;
 				const receiverCount = Object.values(r.whoReceived).filter(Boolean).length;
 				return sum + (receiverCount > 0 ? r.amount / receiverCount : 0);
