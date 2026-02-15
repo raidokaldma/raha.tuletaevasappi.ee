@@ -506,7 +506,7 @@
 							<button
 								tabindex="0"
 								onclick={() => toggleCard(row.id)}
-								class="flex cursor-pointer items-center gap-1 text-xs font-semibold uppercase tracking-wide focus:outline-none focus:ring-2 focus:ring-offset-2 {t.focusRing} {t.cardLabel} rounded px-1 py-0.5"
+								class="flex flex-1 cursor-pointer items-center gap-1 rounded px-1 py-0.5 text-xs font-semibold uppercase tracking-wide focus:outline-none focus:ring-2 focus:ring-offset-2 {t.focusRing} {t.cardLabel}"
 							>
 								<svg class="h-4 w-4 rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
 									<path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
