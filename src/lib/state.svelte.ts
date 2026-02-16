@@ -29,24 +29,6 @@ function allNamesOff(names: string[] = appState.names): Record<string, boolean> 
 	return Object.fromEntries(names.map((n) => [n, false]));
 }
 
-function loadState(): { title: string; names: string[]; newName: string; nextId: number; rows: Row[]; currentStateId: string } {
-	const defaults = { title: '', names: [] as string[], newName: '', nextId: 1, rows: [] as Row[], currentStateId: generateId() };
-	if (typeof window === 'undefined') return defaults;
-	try {
-		const raw = localStorage.getItem('appState');
-		if (raw) {
-			const parsed = { ...defaults, ...JSON.parse(raw) };
-			if (!parsed.currentStateId) parsed.currentStateId = generateId();
-			return parsed;
-		}
-	} catch {
-		// ignore corrupt data
-	}
-	return defaults;
-}
-
-export const appState: { title: string; names: string[]; newName: string; nextId: number; rows: Row[]; currentStateId: string } = $state(loadState());
-
 function loadSavedStates(): SavedState[] {
 	if (typeof window === 'undefined') return [];
 	try {
@@ -58,7 +40,27 @@ function loadSavedStates(): SavedState[] {
 	return [];
 }
 
-export const savedStates: SavedState[] = $state(loadSavedStates());
+const initialSavedStates = loadSavedStates();
+
+function loadState(): { title: string; names: string[]; newName: string; nextId: number; rows: Row[]; currentStateId: string } {
+	const defaults = { title: '', names: [] as string[], newName: '', nextId: 1, rows: [] as Row[], currentStateId: generateId() };
+	if (initialSavedStates.length === 0) return defaults;
+	const savedId = typeof window !== 'undefined' ? localStorage.getItem('currentStateId') : null;
+	const target = initialSavedStates.find((s) => s.id === savedId)
+		?? initialSavedStates.reduce((a, b) => (a.savedAt > b.savedAt ? a : b));
+	return {
+		title: target.title,
+		names: [...target.names],
+		newName: '',
+		nextId: target.nextId,
+		rows: snapshotRows(target.rows),
+		currentStateId: target.id
+	};
+}
+
+export const appState: { title: string; names: string[]; newName: string; nextId: number; rows: Row[]; currentStateId: string } = $state(loadState());
+
+export const savedStates: SavedState[] = $state(initialSavedStates);
 
 function hasContentChanged(existing: SavedState): boolean {
 	if (existing.title !== appState.title) return true;
@@ -102,10 +104,10 @@ function syncCurrentState() {
 if (typeof window !== 'undefined') {
 	$effect.root(() => {
 		$effect(() => {
-			localStorage.setItem('appState', JSON.stringify(appState));
+			localStorage.setItem('savedStates', JSON.stringify(savedStates));
 		});
 		$effect(() => {
-			localStorage.setItem('savedStates', JSON.stringify(savedStates));
+			localStorage.setItem('currentStateId', appState.currentStateId);
 		});
 		// Auto-sync current state to savedStates on every change
 		$effect(() => {

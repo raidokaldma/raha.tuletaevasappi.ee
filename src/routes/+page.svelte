@@ -256,18 +256,15 @@
 	];
 
 	const prefersDark = typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches;
-	function loadThemeIndex(): number {
-		if (typeof window === 'undefined') return 0;
-		const saved = localStorage.getItem('themeIndex');
-		if (saved !== null) {
-			const i = Number(saved);
-			if (i >= 0 && i < themes.length) return i;
-		}
-		return prefersDark ? 1 : 0;
+	function loadThemeName(): string {
+		if (typeof window === 'undefined') return themes[0].name;
+		const saved = localStorage.getItem('theme');
+		if (saved !== null && themes.some((th) => th.name === saved)) return saved;
+		return prefersDark ? 'Midnight' : themes[0].name;
 	}
-	let themeIndex = $state(loadThemeIndex());
-	$effect(() => { localStorage.setItem('themeIndex', String(themeIndex)); });
-	let t = $derived(themes[themeIndex]);
+	let themeName = $state(loadThemeName());
+	$effect(() => { localStorage.setItem('theme', themeName); });
+	let t = $derived(themes.find((th) => th.name === themeName) ?? themes[0]);
 	$effect(() => { document.documentElement.style.backgroundColor = t.pageColor; });
 
 	let menuOpen = $state(false);
@@ -326,7 +323,7 @@
 <div class="min-h-screen {t.page} p-4 md:p-8 transition-colors duration-300">
 	<div class="mx-auto max-w-4xl">
 		<div class="mb-6 flex items-center justify-between gap-4">
-			<div class="group flex min-w-0 flex-1 items-center gap-2 rounded-lg px-3 py-1 -mx-3 -my-1 transition-colors {themeIndex === 1 ? 'hover:bg-white/10' : 'hover:bg-black/10'}">
+			<div class="group flex min-w-0 flex-1 items-center gap-2 rounded-lg px-3 py-1 -mx-3 -my-1 transition-colors {themeName === 'Midnight' ? 'hover:bg-white/10' : 'hover:bg-black/10'}">
 				<input
 					type="text"
 					bind:value={appState.title}
@@ -350,7 +347,7 @@
 						class="rounded-lg border p-2 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 {t.focusRing} {menuOpen ? t.themeBtnActive : t.themeBtn}"
 						title="Change theme"
 					>
-						{#if themeIndex === 1}
+						{#if themeName === 'Midnight'}
 							<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
 								<path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
 							</svg>
@@ -380,8 +377,8 @@
 							{#each themes as theme, i}
 								<button
 									tabindex="0"
-									onclick={() => { themeIndex = i; menuOpen = false; themeBtn?.focus(); }}
-									class="theme-menu-item block w-full px-4 py-2 text-left text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-inset {t.focusRing} {themeIndex === i ? t.menuItemActive : t.menuItem}"
+									onclick={() => { themeName = theme.name; menuOpen = false; themeBtn?.focus(); }}
+									class="theme-menu-item block w-full px-4 py-2 text-left text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-inset {t.focusRing} {themeName === theme.name ? t.menuItemActive : t.menuItem}"
 								>
 									{theme.name}
 								</button>
