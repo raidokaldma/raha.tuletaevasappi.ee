@@ -109,7 +109,7 @@
 			pageColor: '#f9fafb',
 			title: 'text-gray-900',
 			tableWrapper: 'border-gray-200 bg-white',
-			thead: 'bg-gray-100 backdrop-blur-sm shadow-[0_1px_0_0_rgb(229,231,235)]',
+			thead: 'bg-gray-100/80 backdrop-blur-md shadow-[0_1px_0_0_rgb(229,231,235)]',
 			th: 'text-gray-700',
 			row: 'hover:bg-gray-50',
 			rowBorder: 'border-gray-100',
@@ -155,7 +155,7 @@
 			pageColor: '#0f172a',
 			title: 'text-slate-100',
 			tableWrapper: 'border-slate-700 bg-slate-800',
-			thead: 'bg-slate-700 backdrop-blur-sm shadow-[0_1px_0_0_rgb(51,65,85)]',
+			thead: 'bg-slate-700/80 backdrop-blur-md shadow-[0_1px_0_0_rgb(51,65,85)]',
 			th: 'text-slate-300',
 			row: 'hover:bg-slate-750 hover:bg-slate-700/50',
 			rowBorder: 'border-slate-700',
@@ -201,7 +201,7 @@
 			pageColor: '#fdf2f8',
 			title: 'text-pink-900',
 			tableWrapper: 'border-pink-200 bg-white',
-			thead: 'bg-pink-100 backdrop-blur-sm shadow-[0_1px_0_0_rgb(251,207,232)]',
+			thead: 'bg-pink-100/80 backdrop-blur-md shadow-[0_1px_0_0_rgb(251,207,232)]',
 			th: 'text-pink-800',
 			row: 'hover:bg-pink-50',
 			rowBorder: 'border-pink-100',
@@ -260,6 +260,18 @@
 
 	let menuOpen = $state(false);
 	let themeBtn: HTMLButtonElement;
+
+	let headerStuck = $state(false);
+	let tableSentinel: HTMLDivElement;
+	$effect(() => {
+		if (!tableSentinel) return;
+		const observer = new IntersectionObserver(
+			([entry]) => { headerStuck = !entry.isIntersecting; },
+			{ threshold: 1 }
+		);
+		observer.observe(tableSentinel);
+		return () => observer.disconnect();
+	});
 
 	let expandedCards: Set<number> = $state(new Set());
 	let collapsedCards: Set<number> = $state(new Set());
@@ -405,15 +417,16 @@
 		<h2 class="mt-6 mb-4 text-xl font-bold {t.title}">Expenses</h2>
 
 		<!-- Desktop table -->
-		<div class="hidden md:block rounded-lg border {t.tableWrapper} shadow-sm">
+		<div class="hidden md:block overflow-clip rounded-lg border {t.tableWrapper} shadow-sm">
+			<div bind:this={tableSentinel} class="h-0"></div>
 			<table class="w-full">
 				<thead class="sticky top-0 z-10 {t.thead}">
 					<tr>
-						<th class="w-[15%] rounded-tl-lg px-2 py-3 text-left text-sm font-semibold {t.th}">Who Paid</th>
+						<th class="w-[15%] px-2 py-3 text-left text-sm font-semibold {headerStuck ? '' : 'rounded-tl-lg'} {t.th}">Who Paid</th>
 						<th class="w-[25%] px-2 py-3 text-left text-sm font-semibold {t.th}">Description</th>
 						<th class="w-[15%] px-2 py-3 text-right text-sm font-semibold {t.th}">Amount</th>
 						<th class="px-2 py-3 text-left text-sm font-semibold {t.th}">Who Received</th>
-						<th class="w-[5%] rounded-tr-lg px-2 py-3 text-center text-sm font-semibold {t.th}"></th>
+						<th class="w-[5%] px-2 py-3 text-center text-sm font-semibold {headerStuck ? '' : 'rounded-tr-lg'} {t.th}"></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -490,15 +503,13 @@
 						</tr>
 					{/if}
 				</tbody>
-				<tfoot class="border-t-2 {t.tfoot}">
-					<tr>
-						<td colspan="2" class="px-2 py-3 text-sm font-semibold {t.tfootLabel}">Total</td>
-						<td class="px-2 py-3 text-right text-sm font-semibold {t.tfootValue}">{formatEur(total)} &euro;</td>
-						<td></td>
-						<td></td>
-					</tr>
-				</tfoot>
-			</table>
+				</table>
+			<div class="border-t-2 {t.tfoot}">
+				<div class="flex px-2 py-3">
+					<span class="w-[40%] text-sm font-semibold {t.tfootLabel}">Total</span>
+					<span class="w-[15%] text-right text-sm font-semibold {t.tfootValue}">{formatEur(total)} &euro;</span>
+				</div>
+			</div>
 		</div>
 
 		<!-- Mobile cards -->
