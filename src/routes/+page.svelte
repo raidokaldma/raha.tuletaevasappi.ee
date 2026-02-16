@@ -410,7 +410,7 @@
 					maxlength={15}
 					class="w-28 rounded-lg border px-2.5 py-1 text-xs focus:ring-1 focus:outline-none {t.input}"
 				/>
-				<button tabindex="0" type="submit" class="rounded-lg px-2.5 py-1 text-xs font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 {t.addBtn}">+ Add</button>
+				<button tabindex="0" type="submit" class="rounded-lg border border-transparent px-2.5 py-1 text-xs font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 {t.addBtn}">+ Add</button>
 			</form>
 		</div>
 
