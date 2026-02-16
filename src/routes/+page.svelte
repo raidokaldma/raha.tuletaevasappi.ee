@@ -306,7 +306,7 @@
 </script>
 
 <svelte:head>
-	<title>{appState.title || 'Untitled event'}</title>
+	<title>{appState.title || 'Untitled'}</title>
 </svelte:head>
 
 <svelte:window onclick={() => { menuOpen = false; resetMenuOpen = false; }} />
@@ -319,7 +319,7 @@
 					type="text"
 					bind:value={appState.title}
 					class="block w-full border-none bg-transparent text-3xl font-extrabold tracking-tight focus:outline-none {t.title} placeholder:opacity-30"
-					placeholder="Untitled event"
+					placeholder="Untitled"
 					maxlength={30}
 				/>
 				<svg class="h-5 w-5 shrink-0 opacity-20 transition-opacity group-hover:opacity-40 {t.title}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -423,7 +423,7 @@
 										onclick={() => { if (saved.id !== appState.currentStateId) { restoreState(saved.id); } resetMenuOpen = false; resetBtn?.focus(); }}
 										class="reset-menu-item flex w-full items-center gap-1 px-4 py-2 text-left text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-inset {t.focusRing} {saved.id === appState.currentStateId ? t.menuItemActive : t.menuItem}"
 									>
-										<span class="min-w-0 flex-1 truncate">{saved.title || 'Untitled event'}</span>
+										<span class="min-w-0 flex-1 truncate">{saved.title || 'Untitled'}</span>
 										<!-- svelte-ignore a11y_no_static_element_interactions -->
 										<span
 											role="button"
@@ -440,7 +440,7 @@
 									</button>
 								{/each}
 							{:else}
-								<div class="px-4 py-2 text-sm {t.emptyText}">No saved events</div>
+								<div class="px-4 py-2 text-sm {t.emptyText}">Nothing saved yet</div>
 							{/if}
 						</div>
 					{/if}
@@ -482,9 +482,9 @@
 				<thead class="sticky top-0 z-10 {t.thead}">
 					<tr>
 						<th class="w-[15%] px-2 py-3 text-left text-sm font-semibold {headerStuck ? '' : 'rounded-tl-lg'} {t.th}">Who Paid</th>
-						<th class="w-[25%] px-2 py-3 text-left text-sm font-semibold {t.th}">Description</th>
+						<th class="w-[25%] px-2 py-3 text-left text-sm font-semibold {t.th}">For What</th>
 						<th class="w-[15%] px-2 py-3 text-right text-sm font-semibold {t.th}">Amount</th>
-						<th class="px-2 py-3 text-left text-sm font-semibold {t.th}">Who Received</th>
+						<th class="px-2 py-3 text-left text-sm font-semibold {t.th}">Split Between</th>
 						<th class="w-[5%] px-2 py-3 text-center text-sm font-semibold {headerStuck ? '' : 'rounded-tr-lg'} {t.th}"></th>
 					</tr>
 				</thead>
@@ -538,6 +538,9 @@
 											{n}
 										</button>
 									{/each}
+									{#if appState.names.length === 0}
+										<span class="text-xs {t.emptyText}">Add people first</span>
+									{/if}
 								</div>
 							</td>
 							<td class="px-2 py-2 text-center">
@@ -618,7 +621,7 @@
 							</div>
 
 							<label class="block">
-								<span class="mb-1 block text-xs font-medium {t.cardFieldLabel}">Description</span>
+								<span class="mb-1 block text-xs font-medium {t.cardFieldLabel}">For What</span>
 								<input
 									type="text"
 									bind:value={row.description}
@@ -645,13 +648,16 @@
 							</label>
 
 							<div>
-								<span class="mb-1 block text-xs font-medium {t.cardFieldLabel}">Who Received</span>
+								<span class="mb-1 block text-xs font-medium {t.cardFieldLabel}">Split Between</span>
 								<div class="flex flex-wrap gap-1.5">
 									{#each appState.names as n}
 										<button type="button" tabindex="0" onclick={() => row.whoReceived[n] = !row.whoReceived[n]} class="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none {t.focusRing} {row.whoReceived[n] ? t.pillOn : t.pillOff}">
 											{n}
 										</button>
 									{/each}
+									{#if appState.names.length === 0}
+										<span class="text-xs {t.emptyText}">Add people first</span>
+									{/if}
 								</div>
 							</div>
 						</div>
@@ -719,7 +725,7 @@
 		</div>
 
 		<!-- Summary -->
-		<h2 class="mt-10 mb-4 text-xl font-bold {t.title}">Balance per Person</h2>
+		<h2 class="mt-10 mb-4 text-xl font-bold {t.title}">Summary</h2>
 		{#if appState.names.length === 0 || appState.rows.length === 0}
 			<div class="rounded-lg border {t.card} p-8 text-center text-sm {t.emptyText}">Add people and expenses to see a summary.</div>
 		{:else}
@@ -749,7 +755,7 @@
 		{/if}
 
 		<!-- Settlements -->
-		<h2 class="mt-10 mb-4 text-xl font-bold {t.title}">Settle Up</h2>
+		<h2 class="mt-10 mb-4 text-xl font-bold {t.title}">Who Pays Who</h2>
 		{#if settlements.length === 0}
 			<div class="rounded-lg border {t.card} p-8 text-center text-sm {t.emptyText}">All settled up — no payments needed.</div>
 		{:else}
