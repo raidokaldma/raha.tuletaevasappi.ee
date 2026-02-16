@@ -60,24 +60,39 @@ function loadSavedStates(): SavedState[] {
 
 export const savedStates: SavedState[] = $state(loadSavedStates());
 
+function hasContentChanged(existing: SavedState): boolean {
+	if (existing.title !== appState.title) return true;
+	if (JSON.stringify(existing.names) !== JSON.stringify(appState.names)) return true;
+	if (JSON.stringify(existing.rows) !== JSON.stringify(appState.rows)) return true;
+	return false;
+}
+
 function syncCurrentState() {
 	const id = appState.currentStateId;
 	const hasData = appState.title.trim() !== '' || appState.names.length > 0 || appState.rows.length > 0;
 	const idx = savedStates.findIndex((s) => s.id === id);
 
 	if (hasData) {
-		const snapshot: SavedState = {
-			id,
-			title: appState.title,
-			names: [...appState.names],
-			rows: snapshotRows(appState.rows),
-			nextId: appState.nextId,
-			savedAt: Date.now()
-		};
 		if (idx !== -1) {
-			savedStates[idx] = snapshot;
+			if (hasContentChanged(savedStates[idx])) {
+				savedStates[idx] = {
+					...savedStates[idx],
+					title: appState.title,
+					names: [...appState.names],
+					rows: snapshotRows(appState.rows),
+					nextId: appState.nextId,
+					savedAt: Date.now()
+				};
+			}
 		} else {
-			savedStates.push(snapshot);
+			savedStates.push({
+				id,
+				title: appState.title,
+				names: [...appState.names],
+				rows: snapshotRows(appState.rows),
+				nextId: appState.nextId,
+				savedAt: Date.now()
+			});
 		}
 	} else if (idx !== -1) {
 		savedStates.splice(idx, 1);
