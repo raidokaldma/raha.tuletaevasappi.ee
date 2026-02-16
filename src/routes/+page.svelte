@@ -405,15 +405,15 @@
 		<h2 class="mt-6 mb-4 text-xl font-bold {t.title}">Expenses</h2>
 
 		<!-- Desktop table -->
-		<div class="hidden md:block overflow-hidden rounded-lg border {t.tableWrapper} shadow-sm">
+		<div class="hidden md:block rounded-lg border {t.tableWrapper} shadow-sm">
 			<table class="w-full">
 				<thead class="sticky top-0 z-10 {t.thead}">
 					<tr>
-						<th class="w-[15%] px-2 py-3 text-left text-sm font-semibold {t.th}">Who Paid</th>
+						<th class="w-[15%] rounded-tl-lg px-2 py-3 text-left text-sm font-semibold {t.th}">Who Paid</th>
 						<th class="w-[25%] px-2 py-3 text-left text-sm font-semibold {t.th}">Description</th>
 						<th class="w-[15%] px-2 py-3 text-right text-sm font-semibold {t.th}">Amount</th>
 						<th class="px-2 py-3 text-left text-sm font-semibold {t.th}">Who Received</th>
-						<th class="w-[5%] px-2 py-3 text-center text-sm font-semibold {t.th}"></th>
+						<th class="w-[5%] rounded-tr-lg px-2 py-3 text-center text-sm font-semibold {t.th}"></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -511,7 +511,7 @@
 							<button
 								tabindex="0"
 								onclick={() => toggleCard(row.id)}
-								class="flex flex-1 cursor-pointer items-center gap-1 rounded px-1 py-0.5 text-xs font-semibold uppercase tracking-wide focus:outline-none focus:ring-2 focus:ring-offset-2 {t.focusRing} {t.cardLabel}"
+								class="flex flex-1 cursor-pointer items-center gap-1 rounded pr-1 py-0.5 text-xs font-semibold uppercase tracking-wide focus:outline-none focus:ring-2 focus:ring-offset-2 {t.focusRing} {t.cardLabel}"
 							>
 								<svg class="h-4 w-4 rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
 									<path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
