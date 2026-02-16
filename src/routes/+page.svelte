@@ -378,18 +378,24 @@
 					{/if}
 				</div>
 
-				<!-- Reset menu -->
-				<div class="relative">
+				<!-- New + saved states split button -->
+				<div class="relative flex">
+					<button
+						tabindex="0"
+						onclick={() => resetAll()}
+						class="rounded-l-lg border border-r-0 px-2.5 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 {t.focusRing} {t.themeBtn}"
+						title="Start from scratch"
+					>+ New</button>
 					<button
 						bind:this={resetBtn}
 						tabindex="0"
 						onclick={async (e) => { e.stopPropagation(); resetMenuOpen = !resetMenuOpen; if (resetMenuOpen) { await tick(); document.querySelector<HTMLButtonElement>('.reset-menu-item')?.focus(); } }}
 						onkeydown={async (e) => { if (e.key === 'ArrowDown' && !resetMenuOpen) { resetMenuOpen = true; await tick(); document.querySelector<HTMLButtonElement>('.reset-menu-item')?.focus(); } if (e.key === 'Escape' && resetMenuOpen) { e.stopPropagation(); resetMenuOpen = false; resetBtn?.focus(); } }}
-						class="rounded-lg border p-2 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 {t.focusRing} {resetMenuOpen ? t.themeBtnActive : t.themeBtn}"
-						title="Start from scratch"
+						class="rounded-r-lg border px-1.5 py-2 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 {t.focusRing} {resetMenuOpen ? t.themeBtnActive : t.themeBtn}"
+						title="Saved events"
 					>
-						<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.992 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182M20.015 4.356v4.992" />
+						<svg class="h-4 w-4" viewBox="0 0 16 16" fill="currentColor">
+							<path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
 						</svg>
 					</button>
 
@@ -397,6 +403,7 @@
 						<!-- svelte-ignore a11y_no_static_element_interactions a11y_click_events_have_key_events -->
 						<div
 							class="absolute right-0 z-20 mt-2 w-56 origin-top-right rounded-md py-1 {t.menuDropdown}"
+							style="top: 100%"
 							onclick={(e) => e.stopPropagation()}
 							onkeydown={(e) => {
 								if (e.key === 'Escape') { resetMenuOpen = false; resetBtn?.focus(); }
@@ -409,16 +416,7 @@
 								}
 							}}
 						>
-							<button
-								tabindex="0"
-								onclick={() => { resetAll(); resetMenuOpen = false; resetBtn?.focus(); }}
-								class="reset-menu-item block w-full px-4 py-2 text-left text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-inset {t.focusRing} {t.menuItem}"
-							>
-								Start from scratch
-							</button>
-
-						{#if savedStates.length > 0}
-								<div class="my-1 border-t {t.rowBorder}"></div>
+							{#if savedStates.length > 0}
 								{#each savedStates as saved}
 									<button
 										tabindex="0"
@@ -441,6 +439,8 @@
 										</span>
 									</button>
 								{/each}
+							{:else}
+								<div class="px-4 py-2 text-sm {t.emptyText}">No saved events</div>
 							{/if}
 						</div>
 					{/if}
