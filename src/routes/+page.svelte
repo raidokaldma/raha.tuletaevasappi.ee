@@ -593,7 +593,7 @@
 						onclick={() => toggleCard(row.id)}
 						class="w-full cursor-pointer rounded-lg border text-left {t.card} {isRowInvalid(row) ? t.rowInvalid : ''} px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 {t.focusRing}"
 					>
-						<div class="flex items-center gap-2">
+						<div class="pb-1 flex items-center gap-2">
 							<svg class="h-4 w-4 shrink-0 {t.cardLabel}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
 								<path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
 							</svg>
