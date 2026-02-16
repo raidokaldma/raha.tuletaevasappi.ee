@@ -751,7 +751,7 @@
 							<span class={t.summaryValue}>{formatEur(person.paid)} &euro;</span>
 						</div>
 						<div class="flex justify-between">
-							<span class={t.summaryLabel}>Received</span>
+							<span class={t.summaryLabel}>Their cut</span>
 							<span class={t.summaryValue}>{formatEur(person.received)} &euro;</span>
 						</div>
 						<div class="flex justify-between border-t pt-1.5 {t.summaryCard.includes('slate') ? 'border-slate-700' : t.summaryCard.includes('pink') ? 'border-pink-200' : 'border-gray-200'}">
