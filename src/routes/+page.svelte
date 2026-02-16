@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { tick } from 'svelte';
-	import { appState, addName, removeName, addRow, deleteRow, clampAmount, resetAll, type Row } from '$lib/state.svelte';
+	import { appState, addName, removeName, addRow, deleteRow, clampAmount, resetAll, restoreState, deleteSavedState, savedStates, type Row } from '$lib/state.svelte';
 
 	function isRowInvalid(row: Row): boolean {
 		return !row.whoPaid || (!!row.amount && !Object.values(row.whoReceived).some(Boolean));
@@ -261,6 +261,9 @@
 	let menuOpen = $state(false);
 	let themeBtn: HTMLButtonElement;
 
+	let resetMenuOpen = $state(false);
+	let resetBtn: HTMLButtonElement;
+
 	let headerStuck = $state(false);
 	let tableSentinel: HTMLDivElement;
 	$effect(() => {
@@ -306,7 +309,7 @@
 	<title>{appState.title || 'Untitled event'}</title>
 </svelte:head>
 
-<svelte:window onclick={() => { menuOpen = false; }} />
+<svelte:window onclick={() => { menuOpen = false; resetMenuOpen = false; }} />
 
 <div class="min-h-screen {t.page} p-4 md:p-8 transition-colors duration-300">
 	<div class="mx-auto max-w-4xl">
@@ -375,17 +378,73 @@
 					{/if}
 				</div>
 
-				<!-- Reset button -->
-				<button
-					tabindex="0"
-					onclick={resetAll}
-					class="rounded-lg border p-2 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 {t.focusRing} {t.themeBtn}"
-					title="Start from scratch"
-				>
-					<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-						<path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.992 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182M20.015 4.356v4.992" />
-					</svg>
-				</button>
+				<!-- Reset menu -->
+				<div class="relative">
+					<button
+						bind:this={resetBtn}
+						tabindex="0"
+						onclick={async (e) => { e.stopPropagation(); resetMenuOpen = !resetMenuOpen; if (resetMenuOpen) { await tick(); document.querySelector<HTMLButtonElement>('.reset-menu-item')?.focus(); } }}
+						onkeydown={async (e) => { if (e.key === 'ArrowDown' && !resetMenuOpen) { resetMenuOpen = true; await tick(); document.querySelector<HTMLButtonElement>('.reset-menu-item')?.focus(); } if (e.key === 'Escape' && resetMenuOpen) { e.stopPropagation(); resetMenuOpen = false; resetBtn?.focus(); } }}
+						class="rounded-lg border p-2 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 {t.focusRing} {resetMenuOpen ? t.themeBtnActive : t.themeBtn}"
+						title="Start from scratch"
+					>
+						<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.992 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182M20.015 4.356v4.992" />
+						</svg>
+					</button>
+
+					{#if resetMenuOpen}
+						<!-- svelte-ignore a11y_no_static_element_interactions a11y_click_events_have_key_events -->
+						<div
+							class="absolute right-0 z-20 mt-2 w-56 origin-top-right rounded-md py-1 {t.menuDropdown}"
+							onclick={(e) => e.stopPropagation()}
+							onkeydown={(e) => {
+								if (e.key === 'Escape') { resetMenuOpen = false; resetBtn?.focus(); }
+								if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+									e.preventDefault();
+									const items = [...e.currentTarget.querySelectorAll<HTMLButtonElement>('.reset-menu-item')];
+									const idx = items.indexOf(document.activeElement as HTMLButtonElement);
+									const next = e.key === 'ArrowDown' ? (idx + 1) % items.length : (idx - 1 + items.length) % items.length;
+									items[next]?.focus();
+								}
+							}}
+						>
+							<button
+								tabindex="0"
+								onclick={() => { resetAll(); resetMenuOpen = false; resetBtn?.focus(); }}
+								class="reset-menu-item block w-full px-4 py-2 text-left text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-inset {t.focusRing} {t.menuItem}"
+							>
+								Start from scratch
+							</button>
+
+						{#if savedStates.length > 0}
+								<div class="my-1 border-t {t.rowBorder}"></div>
+								{#each savedStates as saved}
+									<button
+										tabindex="0"
+										onclick={() => { if (saved.id !== appState.currentStateId) { restoreState(saved.id); } resetMenuOpen = false; resetBtn?.focus(); }}
+										class="reset-menu-item flex w-full items-center gap-1 px-4 py-2 text-left text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-inset {t.focusRing} {saved.id === appState.currentStateId ? t.menuItemActive : t.menuItem}"
+									>
+										<span class="min-w-0 flex-1 truncate">{saved.title || 'Untitled event'}</span>
+										<!-- svelte-ignore a11y_no_static_element_interactions -->
+										<span
+											role="button"
+											tabindex="0"
+											onclick={(e) => { e.stopPropagation(); const isCurrent = saved.id === appState.currentStateId; deleteSavedState(saved.id); if (isCurrent) { resetAll(true); resetMenuOpen = false; resetBtn?.focus(); } }}
+											onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); const isCurrent = saved.id === appState.currentStateId; deleteSavedState(saved.id); if (isCurrent) { resetAll(true); resetMenuOpen = false; resetBtn?.focus(); } } }}
+											class="shrink-0 rounded p-0.5 {t.deleteBtn}"
+											title="Delete saved state"
+										>
+											<svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+												<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+											</svg>
+										</span>
+									</button>
+								{/each}
+							{/if}
+						</div>
+					{/if}
+				</div>
 			</div>
 		</div>
 
