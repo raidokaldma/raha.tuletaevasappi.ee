@@ -11,7 +11,19 @@
 		return value.toFixed(2);
 	}
 
+	function formatTime(ts: number): string {
+		const d = new Date(ts);
+		const now = new Date();
+		const time = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+		if (d.toDateString() === now.toDateString()) return `Today ${time}`;
+		const yesterday = new Date(now);
+		yesterday.setDate(yesterday.getDate() - 1);
+		if (d.toDateString() === yesterday.toDateString()) return `Yesterday ${time}`;
+		return `${d.toLocaleDateString([], { day: 'numeric', month: 'short' })} ${time}`;
+	}
+
 	let total = $derived(appState.rows.reduce((sum, r) => sum + (r.amount ?? 0), 0));
+	let currentSavedAt = $derived(savedStates.find((s) => s.id === appState.currentStateId)?.savedAt);
 
 	let validRows = $derived(appState.rows.filter((r) => !isRowInvalid(r)));
 
@@ -423,7 +435,10 @@
 										onclick={() => { if (saved.id !== appState.currentStateId) { restoreState(saved.id); } resetMenuOpen = false; resetBtn?.focus(); }}
 										class="reset-menu-item flex w-full items-center gap-1 px-4 py-2 text-left text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-inset {t.focusRing} {saved.id === appState.currentStateId ? t.menuItemActive : t.menuItem}"
 									>
-										<span class="min-w-0 flex-1 truncate">{saved.title || 'Untitled'}</span>
+										<span class="min-w-0 flex-1">
+											<span class="block truncate">{saved.title || 'Untitled'}</span>
+											<span class="block text-xs {t.emptyText}">{formatTime(saved.savedAt)}</span>
+										</span>
 										<!-- svelte-ignore a11y_no_static_element_interactions -->
 										<span
 											role="button"
@@ -773,6 +788,10 @@
 					</div>
 				{/each}
 			</div>
+		{/if}
+
+		{#if currentSavedAt}
+			<div class="mt-10 text-center text-xs {t.emptyText}">Last edited {formatTime(currentSavedAt)}</div>
 		{/if}
 
 	</div>
