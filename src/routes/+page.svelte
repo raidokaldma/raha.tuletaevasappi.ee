@@ -15,10 +15,10 @@
 		const d = new Date(ts);
 		const now = new Date();
 		const time = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-		if (d.toDateString() === now.toDateString()) return `Today ${time}`;
+		if (d.toDateString() === now.toDateString()) return `today ${time}`;
 		const yesterday = new Date(now);
 		yesterday.setDate(yesterday.getDate() - 1);
-		if (d.toDateString() === yesterday.toDateString()) return `Yesterday ${time}`;
+		if (d.toDateString() === yesterday.toDateString()) return `yesterday ${time}`;
 		return `${d.toLocaleDateString([], { day: 'numeric', month: 'short' })} ${time}`;
 	}
 
