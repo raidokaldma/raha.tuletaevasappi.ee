@@ -141,7 +141,7 @@
 			totalBar: 'border-gray-200 bg-gray-100',
 			totalLabel: 'text-gray-700',
 			totalValue: 'text-gray-900',
-			addBtn: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
+			addBtn: 'bg-blue-600 text-white hover:bg-blue-700',
 			summaryCard: 'border-gray-200 bg-white',
 			summaryName: 'text-gray-900',
 			summaryLabel: 'text-gray-500',
@@ -176,7 +176,7 @@
 			euro: 'text-slate-400',
 			pillOn: 'border border-blue-400 bg-blue-900 text-blue-300 ring-1 ring-blue-400',
 			pillOff: 'border border-slate-600 bg-slate-700 text-slate-400',
-			deleteBtn: 'text-red-400 hover:bg-red-900/30 hover:text-red-300 focus:ring-red-400',
+			deleteBtn: 'text-red-400 hover:bg-red-900/30 hover:text-red-300 focus:ring-red-400 focus:ring-offset-slate-900',
 			emptyText: 'text-slate-500',
 			tfoot: 'border-slate-600 bg-slate-700/60 backdrop-blur-md',
 			tfootLabel: 'text-slate-300',
@@ -187,7 +187,7 @@
 			totalBar: 'border-slate-700 bg-slate-700',
 			totalLabel: 'text-slate-300',
 			totalValue: 'text-slate-100',
-			addBtn: 'bg-blue-500 text-white hover:bg-blue-400 focus:ring-blue-400',
+			addBtn: 'bg-blue-500 text-white hover:bg-blue-400',
 			summaryCard: 'border-slate-700 bg-slate-800',
 			summaryName: 'text-slate-100',
 			summaryLabel: 'text-slate-400',
@@ -200,7 +200,7 @@
 			settlementTo: 'text-slate-100',
 			settlementAmount: 'text-blue-300 bg-blue-900/40',
 			rowInvalid: 'bg-red-900/20!',
-			focusRing: 'focus:ring-blue-400',
+			focusRing: 'focus:ring-blue-400 focus:ring-offset-slate-900',
 			themeBtn: 'border-slate-600 bg-slate-800 text-slate-300 hover:bg-slate-700',
 			themeBtnActive: 'border-blue-400 bg-blue-900/40 text-blue-300 ring-1 ring-blue-400',
 			menuDropdown: 'bg-slate-800 ring-1 ring-white/10 shadow-lg',
@@ -233,7 +233,7 @@
 			totalBar: 'border-pink-200 bg-pink-100',
 			totalLabel: 'text-pink-700',
 			totalValue: 'text-pink-900',
-			addBtn: 'bg-pink-500 text-white hover:bg-pink-600 focus:ring-pink-400',
+			addBtn: 'bg-pink-500 text-white hover:bg-pink-600',
 			summaryCard: 'border-pink-200 bg-white',
 			summaryName: 'text-pink-900',
 			summaryLabel: 'text-pink-400',
@@ -481,7 +481,7 @@
 					maxlength={15}
 					class="w-28 rounded-lg border px-2.5 py-1 text-xs focus:ring-1 focus:outline-none {t.input}"
 				/>
-				<button tabindex="0" type="submit" class="rounded-lg border border-transparent px-2.5 py-1 text-xs font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 {t.addBtn}">+ Add</button>
+				<button tabindex="0" type="submit" class="rounded-lg border border-transparent px-2.5 py-1 text-xs font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 {t.focusRing} {t.addBtn}">+ Add</button>
 			</form>
 		</div>
 
@@ -546,7 +546,7 @@
 							<td class="px-2 py-2">
 								<div class="flex flex-wrap gap-1.5">
 									{#each appState.names as n}
-										<button type="button" tabindex="0" onclick={() => row.whoReceived[n] = !row.whoReceived[n]} class="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none {t.focusRing} {row.whoReceived[n] ? t.pillOn : t.pillOff}">
+										<button type="button" tabindex="0" onclick={() => row.whoReceived[n] = !row.whoReceived[n]} class="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors focus:ring-2 focus:outline-none {t.focusRing} {row.whoReceived[n] ? t.pillOn : t.pillOff}">
 											{n}
 										</button>
 									{/each}
@@ -559,7 +559,7 @@
 								<button
 									tabindex="0"
 									onclick={() => deleteRow(row.id)}
-									class="rounded p-1 focus:outline-none focus:ring-2 focus:ring-offset-2 {t.focusRing} {t.deleteBtn}"
+									class="rounded p-1 focus:outline-none focus:ring-2 {t.focusRing} {t.deleteBtn}"
 									title="Delete row"
 								>
 									<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -606,7 +606,7 @@
 							<button
 								tabindex="0"
 								onclick={() => deleteRow(row.id)}
-								class="rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 {t.focusRing} {t.deleteBtn}"
+								class="rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 {t.focusRing} {t.deleteBtn}"
 							>
 								Delete
 							</button>
@@ -663,7 +663,7 @@
 								<span class="mb-1 block text-xs font-medium {t.cardFieldLabel}">Split Between</span>
 								<div class="flex flex-wrap gap-1.5">
 									{#each appState.names as n}
-										<button type="button" tabindex="0" onclick={() => row.whoReceived[n] = !row.whoReceived[n]} class="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors focus:ring-2 focus:ring-offset-2 focus:outline-none {t.focusRing} {row.whoReceived[n] ? t.pillOn : t.pillOff}">
+										<button type="button" tabindex="0" onclick={() => row.whoReceived[n] = !row.whoReceived[n]} class="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors focus:ring-2 focus:outline-none {t.focusRing} {row.whoReceived[n] ? t.pillOn : t.pillOff}">
 											{n}
 										</button>
 									{/each}
@@ -730,7 +730,7 @@
 						if (el.offsetParent !== null) { el.focus(); break; }
 					}
 				}}
-				class="rounded-lg px-4 py-2 text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 {t.addBtn}"
+				class="rounded-lg px-4 py-2 text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 {t.focusRing} {t.addBtn}"
 			>
 				+ Add Row
 			</button>
