@@ -651,7 +651,7 @@
 		<!-- Summary -->
 		<h2 class="mt-10 mb-4 text-xl font-bold {t.title}">Balance per Person</h2>
 		{#if appState.names.length === 0 || appState.rows.length === 0}
-			<p class="text-sm {t.emptyText}">Add people and expenses to see a summary.</p>
+			<div class="rounded-lg border {t.card} p-8 text-center text-sm {t.emptyText}">Add people and expenses to see a summary.</div>
 		{:else}
 		<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
 			{#each summary as person}
@@ -681,7 +681,7 @@
 		<!-- Settlements -->
 		<h2 class="mt-10 mb-4 text-xl font-bold {t.title}">Settle Up</h2>
 		{#if settlements.length === 0}
-			<p class="text-sm {t.emptyText}">All settled up — no payments needed.</p>
+			<div class="rounded-lg border {t.card} p-8 text-center text-sm {t.emptyText}">All settled up — no payments needed.</div>
 		{:else}
 			<div class="grid grid-cols-1 gap-2 md:grid-cols-2">
 				{#each settlements as s}
