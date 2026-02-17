@@ -17,8 +17,10 @@ export type SavedState = {
 	savedAt: number;
 };
 
+export const MAX_AMOUNT = 9999.99;
+
 function generateId(): string {
-	return Math.random().toString(36).slice(2) + Date.now().toString(36);
+	return crypto.randomUUID();
 }
 
 function snapshotRows(rows: Row[]): Row[] {
@@ -27,6 +29,31 @@ function snapshotRows(rows: Row[]): Row[] {
 
 function allNamesOff(names: string[] = appState.names): Record<string, boolean> {
 	return Object.fromEntries(names.map((n) => [n, false]));
+}
+
+function arraysEqual(a: string[], b: string[]): boolean {
+	if (a.length !== b.length) return true;
+	for (let i = 0; i < a.length; i++) {
+		if (a[i] !== b[i]) return true;
+	}
+	return false;
+}
+
+function rowsChanged(a: Row[], b: Row[]): boolean {
+	if (a.length !== b.length) return true;
+	for (let i = 0; i < a.length; i++) {
+		if (a[i].id !== b[i].id) return true;
+		if (a[i].whoPaid !== b[i].whoPaid) return true;
+		if (a[i].description !== b[i].description) return true;
+		if (a[i].amount !== b[i].amount) return true;
+		const keysA = Object.keys(a[i].whoReceived);
+		const keysB = Object.keys(b[i].whoReceived);
+		if (keysA.length !== keysB.length) return true;
+		for (const k of keysA) {
+			if (a[i].whoReceived[k] !== b[i].whoReceived[k]) return true;
+		}
+	}
+	return false;
 }
 
 function loadSavedStates(): SavedState[] {
@@ -64,8 +91,8 @@ export const savedStates: SavedState[] = $state(initialSavedStates);
 
 function hasContentChanged(existing: SavedState): boolean {
 	if (existing.title !== appState.title) return true;
-	if (JSON.stringify(existing.names) !== JSON.stringify(appState.names)) return true;
-	if (JSON.stringify(existing.rows) !== JSON.stringify(appState.rows)) return true;
+	if (arraysEqual(existing.names, appState.names)) return true;
+	if (rowsChanged(existing.rows, appState.rows)) return true;
 	return false;
 }
 
@@ -102,26 +129,30 @@ function syncCurrentState() {
 }
 
 if (typeof window !== 'undefined') {
-	$effect.root(() => {
+	const cleanup = $effect.root(() => {
 		$effect(() => {
 			localStorage.setItem('savedStates', JSON.stringify(savedStates));
 		});
 		$effect(() => {
 			localStorage.setItem('currentStateId', appState.currentStateId);
 		});
-		// Auto-sync current state to savedStates on every change
 		$effect(() => {
-			// Track all appState dependencies
-			const _id = appState.currentStateId;
-			const _title = appState.title;
-			const _names = appState.names.length;
-			const _rows = JSON.stringify(appState.rows);
-			const _nextId = appState.nextId;
+			// Read all appState fields to register dependencies
+			appState.currentStateId;
+			appState.title;
+			appState.names.length;
+			appState.nextId;
+			for (const row of appState.rows) {
+				row.id; row.whoPaid; row.description; row.amount;
+				for (const k in row.whoReceived) row.whoReceived[k];
+			}
 
-			// Write to savedStates without tracking it
 			untrack(() => syncCurrentState());
 		});
 	});
+
+	// cleanup is available if ever needed (e.g. HMR), but SPA never unmounts
+	void cleanup;
 }
 
 export function addName() {
@@ -155,7 +186,7 @@ export function deleteRow(id: number) {
 export function clampAmount(row: Row) {
 	if (row.amount === null) return;
 	if (row.amount < 0) row.amount = 0;
-	if (row.amount > 9999.99) row.amount = 9999.99;
+	if (row.amount > MAX_AMOUNT) row.amount = MAX_AMOUNT;
 }
 
 export function resetAll(skipSave = false) {
