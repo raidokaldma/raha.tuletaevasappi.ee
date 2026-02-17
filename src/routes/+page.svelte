@@ -51,6 +51,8 @@
 	let savedStatesMenu: SavedStatesMenu;
 </script>
 
+<svelte:window onclick={() => { themeMenu?.close(); savedStatesMenu?.close(); }} />
+
 <svelte:head>
 	<title>{appState.title || 'Untitled'}</title>
 </svelte:head>
@@ -58,7 +60,7 @@
 <div class="min-h-screen {t.page} p-4 md:p-8 transition-colors duration-300">
 	<div class="mx-auto max-w-4xl">
 		<div class="mb-6 flex items-center justify-between gap-4">
-			<div class="group flex min-w-0 flex-1 items-center gap-2 rounded-lg px-3 py-1 -mx-3 -my-1 transition-colors {themeName === 'Midnight' ? 'hover:bg-white/10' : 'hover:bg-black/10'}">
+			<div class="group flex min-w-0 flex-1 items-center gap-2 rounded-lg px-3 py-1 -mx-3 -my-1 transition-colors {themeName === 'Midnight' || themeName === 'Obsidian' ? 'hover:bg-white/10' : 'hover:bg-black/10'}">
 				<input
 					type="text"
 					bind:value={appState.title}
